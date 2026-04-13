@@ -1,8 +1,12 @@
 let patients = JSON.parse(localStorage.getItem('hospitalData')) || [];
-renderTable();
 
+// Page load hote hi table dikhao
+window.onload = function() {
+    renderTable();
+};
+
+// 1. Sections change karne ka function
 function showSection(sectionId) {
-    // Hidden classes check
     document.getElementById('dashboardSection').classList.add('hidden');
     document.getElementById('appointmentsSection').classList.add('hidden');
     document.getElementById('pharmacySection').classList.add('hidden');
@@ -13,10 +17,12 @@ function showSection(sectionId) {
     }
 }
 
+// 2. Add Patient wala Modal open/close
 function toggleModal() {
     document.getElementById('modal').classList.toggle('hidden');
 }
 
+// 3. Naya Patient save karne ka function
 function savePatient() {
     const nameInput = document.getElementById('name');
     const diseaseInput = document.getElementById('disease');
@@ -37,12 +43,15 @@ function savePatient() {
     }
 }
 
+// 4. Table aur Total Count dikhane ka function
 function renderTable() {
     const list = document.getElementById('patientList');
+    const totalCount = document.getElementById('totalPatients');
+    
     if (!list) return;
     
     list.innerHTML = "";
-    document.getElementById('totalPatients').innerText = patients.length;
+    if (totalCount) totalCount.innerText = patients.length;
 
     patients.forEach((p) => {
         list.innerHTML += `
@@ -54,6 +63,7 @@ function renderTable() {
     });
 }
 
+// 5. Patient delete karne ka function
 function deletePatient(id) {
     if(confirm("Delete this patient?")) {
         patients = patients.filter(p => p.id !== id);
@@ -62,6 +72,7 @@ function deletePatient(id) {
     }
 }
 
+// 6. Search bar ka function
 function searchPatient() {
     let input = document.getElementById('searchInput').value.toLowerCase();
     let rows = document.querySelectorAll('#patientList tr');
@@ -71,18 +82,36 @@ function searchPatient() {
     });
 }
 
+// 7. Pharmacy Bill dikhane ka function
 function buyMed(name, price) {
-    document.getElementById('billItem').innerText = name;
-    document.getElementById('billTotal').innerText = "Rs. " + price;
-    document.getElementById('billModal').classList.remove('hidden');
+    const billItem = document.getElementById('billItem');
+    const billTotal = document.getElementById('billTotal');
+    const billModal = document.getElementById('billModal');
+
+    if (billItem && billTotal && billModal) {
+        billItem.innerText = name;
+        billTotal.innerText = "Rs. " + price;
+        billModal.classList.remove('hidden');
+    } else {
+        alert("Bill: " + name + " - Rs. " + price);
+    }
 }
 
+// 8. Bill modal band karne ka function
 function closeBill() {
-    document.getElementById('billModal').classList.add('hidden');
+    const billModal = document.getElementById('billModal');
+    if (billModal) {
+        billModal.classList.add('hidden');
+    }
 }
 
+// 9. Appointment booking ka function
 function bookAppoint() {
     let date = document.getElementById('appDate').value;
-    if(date) alert("Appointment booked for: " + date);
-    else alert("Please select a date!");
+    let doctor = document.getElementById('docSelect').value;
+    if(date) {
+        alert("Appointment confirmed with " + doctor + " on " + date);
+    } else {
+        alert("Please select a date!");
+    }
 }
