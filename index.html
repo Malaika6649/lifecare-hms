@@ -8,35 +8,38 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* Mobile par sidebar scroll handle karne ke liye */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex flex-col md:flex-row h-screen overflow-hidden">
         
-        <aside class="w-72 bg-slate-900 text-slate-300 shadow-2xl flex flex-col">
-            <div class="p-8 text-2xl font-black text-white border-b border-slate-800 flex items-center gap-2">
-                <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-xs">LC</div>
+        <aside class="w-full md:w-72 bg-slate-900 text-slate-300 shadow-2xl flex flex-col h-auto md:h-full">
+            <div class="p-6 md:p-8 text-xl md:2xl font-black text-white border-b border-slate-800 flex items-center gap-2">
+                <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-xs text-white">LC</div>
                 Life<span class="text-cyan-400">Care+</span>
             </div>
-            <nav class="mt-8 px-4 flex-1 space-y-2">
-                <button onclick="showSection('dashboard')" class="w-full text-left py-3.5 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
-                    📊 Dashboard
+            <nav class="p-4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto custom-scrollbar">
+                <button onclick="showSection('dashboard')" class="whitespace-nowrap flex-1 md:w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
+                    📊 <span class="hidden md:inline">Dashboard</span>
                 </button>
-                <button onclick="showSection('appointments')" class="w-full text-left py-3.5 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
-                    📅 Appointments
+                <button onclick="showSection('appointments')" class="whitespace-nowrap flex-1 md:w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
+                    📅 <span class="hidden md:inline">Appointments</span>
                 </button>
-                <button onclick="showSection('pharmacy')" class="w-full text-left py-3.5 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
-                    💊 Online Pharmacy
+                <button onclick="showSection('pharmacy')" class="whitespace-nowrap flex-1 md:w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
+                    💊 <span class="hidden md:inline">Pharmacy</span>
                 </button>
             </nav>
         </aside>
 
-        <main class="flex-1 p-10 overflow-y-auto bg-[#f8fafc]">
+        <main class="flex-1 p-4 md:p-10 overflow-y-auto bg-[#f8fafc]">
             
             <div id="dashboardSection">
-                <header class="flex justify-between items-center mb-8">
-                    <h1 class="text-4xl font-extrabold text-slate-900">Hospital Dashboard</h1>
-                    <button onclick="toggleModal()" class="bg-cyan-500 text-white px-8 py-3.5 rounded-2xl font-bold shadow-lg shadow-cyan-200 hover:bg-cyan-600 transition-all">
+                <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900">Hospital Dashboard</h1>
+                    <button onclick="toggleModal()" class="w-full md:w-auto bg-cyan-500 text-white px-8 py-3.5 rounded-2xl font-bold shadow-lg shadow-cyan-200 hover:bg-cyan-600 transition-all">
                         + Add Patient
                     </button>
                 </header>
@@ -46,28 +49,28 @@
                     class="w-full pl-6 pr-4 py-4 bg-white border-none rounded-2xl shadow-sm focus:ring-2 focus:ring-cyan-400 outline-none transition-all">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8">
+                    <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Total Patients</p>
-                        <h3 id="totalPatients" class="text-5xl font-black text-slate-900 mt-2">0</h3>
+                        <h3 id="totalPatients" class="text-4xl md:text-5xl font-black text-slate-900 mt-2">0</h3>
                     </div>
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                    <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Today's Visits</p>
-                        <h3 class="text-5xl font-black text-slate-900 mt-2">05</h3>
+                        <h3 class="text-4xl md:text-5xl font-black text-slate-900 mt-2">05</h3>
                     </div>
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                    <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-sm border border-slate-100">
                         <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Med Stock</p>
-                        <h3 class="text-5xl font-black text-slate-900 mt-2">120</h3>
+                        <h3 class="text-4xl md:text-5xl font-black text-slate-900 mt-2">120</h3>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-                    <table class="w-full text-left">
+                <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-x-auto">
+                    <table class="w-full text-left min-w-[500px]">
                         <thead class="bg-slate-50">
                             <tr>
                                 <th class="p-6 text-slate-400 font-bold text-xs uppercase">Patient Name</th>
                                 <th class="p-6 text-slate-400 font-bold text-xs uppercase">Diagnosis</th>
-                                <th class="p-6 text-slate-400 font-bold text-xs uppercase">Manage</th>
+                                <th class="p-6 text-slate-400 font-bold text-xs uppercase text-right">Manage</th>
                             </tr>
                         </thead>
                         <tbody id="patientList"></tbody>
@@ -77,7 +80,7 @@
 
             <div id="appointmentsSection" class="hidden">
                 <h2 class="text-3xl font-extrabold mb-8 text-slate-900">Book Appointment</h2>
-                <div class="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 max-w-lg">
+                <div class="bg-white p-6 md:p-10 rounded-[2rem] shadow-sm border border-slate-100 max-w-lg">
                     <div class="space-y-6">
                         <input id="appDate" type="date" class="bg-slate-50 p-4 rounded-xl w-full outline-none focus:ring-2 focus:ring-cyan-400">
                         <select id="docSelect" class="bg-slate-50 p-4 rounded-xl w-full outline-none focus:ring-2 focus:ring-cyan-400">
@@ -92,16 +95,16 @@
 
             <div id="pharmacySection" class="hidden">
                 <h2 class="text-3xl font-extrabold mb-8 text-slate-900">Online Pharmacy</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 text-center">
                         <p class="font-black text-2xl text-slate-800">Panadol</p>
                         <p class="text-cyan-500 font-black mb-6">Rs. 50</p>
-                        <button onclick="buyMed('Panadol', 50)" class="bg-slate-900 text-white py-3 rounded-xl w-full font-bold">Buy Now</button>
+                        <button onclick="buyMed('Panadol', 50)" class="bg-slate-900 text-white py-3 rounded-xl w-full font-bold hover:bg-black">Buy Now</button>
                     </div>
                     <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 text-center">
                         <p class="font-black text-2xl text-slate-800">Cough Syrup</p>
                         <p class="text-cyan-500 font-black mb-6">Rs. 150</p>
-                        <button onclick="buyMed('Cough Syrup', 150)" class="bg-slate-900 text-white py-3 rounded-xl w-full font-bold">Buy Now</button>
+                        <button onclick="buyMed('Cough Syrup', 150)" class="bg-slate-900 text-white py-3 rounded-xl w-full font-bold hover:bg-black">Buy Now</button>
                     </div>
                 </div>
             </div>
@@ -110,19 +113,19 @@
     </div>
 
     <div id="modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
-        <div class="bg-white p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl">
-            <h2 class="text-3xl font-black mb-6 text-slate-900 italic">Add Patient</h2>
-            <input id="name" type="text" placeholder="Patient Full Name" class="w-full bg-slate-50 p-4 rounded-2xl mb-4 outline-none">
-            <input id="disease" type="text" placeholder="Diagnosis" class="w-full bg-slate-50 p-4 rounded-2xl mb-8 outline-none">
+        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl">
+            <h2 class="text-3xl font-black mb-6 text-slate-900">Add Patient</h2>
+            <input id="name" type="text" placeholder="Patient Full Name" class="w-full bg-slate-50 p-4 rounded-2xl mb-4 outline-none border border-transparent focus:border-cyan-400">
+            <input id="disease" type="text" placeholder="Diagnosis" class="w-full bg-slate-50 p-4 rounded-2xl mb-8 outline-none border border-transparent focus:border-cyan-400">
             <div class="flex flex-col gap-3">
-                <button onclick="savePatient()" class="bg-cyan-500 text-white py-4 rounded-2xl font-black text-lg">Save Record</button>
-                <button onclick="toggleModal()" class="text-slate-400 font-bold">Cancel</button>
+                <button onclick="savePatient()" class="bg-cyan-500 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-cyan-100 hover:bg-cyan-600">Save Record</button>
+                <button onclick="toggleModal()" class="text-slate-400 font-bold hover:text-slate-600">Cancel</button>
             </div>
         </div>
     </div>
 
     <div id="billModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-[100]">
-        <div class="bg-white rounded-[2.5rem] w-full max-w-xs overflow-hidden shadow-2xl">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-xs overflow-hidden shadow-2xl scale-up-animation">
             <div class="bg-slate-900 p-8 text-white text-center">
                 <h2 class="text-xl font-black uppercase tracking-widest">Receipt</h2>
             </div>
@@ -130,7 +133,7 @@
                 <div class="flex justify-between mb-4 text-xs font-black uppercase text-slate-400">
                     <span>Item:</span> <span id="billItem" class="text-slate-800">-</span>
                 </div>
-                <div class="flex justify-between mb-8 pb-4 border-b border-dashed">
+                <div class="flex justify-between mb-8 pb-4 border-b border-dashed border-slate-200">
                     <span class="text-xs font-black uppercase text-slate-400">Total:</span> 
                     <span id="billTotal" class="text-cyan-500 font-black text-xl">-</span>
                 </div>
