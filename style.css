@@ -1,0 +1,52 @@
+/* 1. Fonts aur Google Import */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+}
+
+/* 2. Custom Scrollbar for Mobile Sidebar */
+.custom-scrollbar::-webkit-scrollbar { 
+    width: 4px; 
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+    background: #334155; 
+    border-radius: 10px; 
+}
+
+/* 3. Animations */
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide { 
+    animation: slideIn 0.4s ease-out forwards; 
+}
+
+@keyframes bounce-in {
+    0% { transform: translateX(100%); }
+    60% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.animate-bounce-in { 
+    animation: bounce-in 0.5s ease-out; 
+}
+
+/* 4. Table Hover Effect (Enhancement) */
+#patientList tr:hover {
+    background-color: #f1f5f9;
+    transition: all 0.2s ease;
+}
+
+/* 5. Scale up animation for Modals */
+.scale-up-animation {
+    animation: scaleUp 0.3s ease-out;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
