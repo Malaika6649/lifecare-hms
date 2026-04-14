@@ -2,19 +2,25 @@
 let patients = JSON.parse(localStorage.getItem('hospitalData')) || [];
 let staff = JSON.parse(localStorage.getItem('hospitalStaff')) || [];
 
-// --- HEALTH TIPS DATA (In English) ---
+// --- HEALTH TIPS DATA (Stricly English) ---
 const tipsData = {
     morning: { 
-        text: "Start your day with a glass of warm water and a healthy breakfast.", 
-        emoji: "☀️", color: "from-orange-400 to-yellow-500", label: "Morning Tip" 
+        text: "Morning: Start your day with a glass of warm water and a healthy breakfast.", 
+        emoji: "☀️", 
+        color: "from-orange-400 to-yellow-500", 
+        label: "Morning Health Tip" 
     },
     afternoon: { 
-        text: "Stay hydrated! Drink plenty of water and include greens in your lunch.", 
-        emoji: "🌤️", color: "from-cyan-500 to-blue-600", label: "Afternoon Tip" 
+        text: "Afternoon: Stay hydrated! Drink plenty of water and add salad to your lunch.", 
+        emoji: "🌤️", 
+        color: "from-cyan-500 to-blue-600", 
+        label: "Afternoon Health Tip" 
     },
     evening: { 
-        text: "Eat a light dinner at least 2 hours before sleep and take a short walk.", 
-        emoji: "🌙", color: "from-indigo-800 to-slate-900", label: "Evening Tip" 
+        text: "Evening: Have a light dinner and take a 15-minute walk before going to bed.", 
+        emoji: "🌙", 
+        color: "from-indigo-800 to-slate-900", 
+        label: "Evening Health Tip" 
     }
 };
 
@@ -27,18 +33,19 @@ function showNotification(msg, type = 'success') {
     const bgColor = type === 'success' ? 'bg-slate-900' : 'bg-rose-600';
     const icon = type === 'success' ? '✨' : '⚠️';
 
-    toast.className = `${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border-l-4 border-cyan-400 min-w-[250px] transition-all duration-500`;
+    toast.className = `${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border-l-4 border-cyan-400 min-w-[280px] transition-all duration-500`;
     toast.innerHTML = `<span>${icon}</span> ${msg}`;
     
     container.appendChild(toast);
 
     setTimeout(() => {
         toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
         setTimeout(() => toast.remove(), 500);
     }, 4000);
 }
 
-// --- NAVIGATION ---
+// --- NAVIGATION (Fixed Buttons) ---
 function showSection(sectionId) {
     const sections = ['dashboardSection', 'appointmentsSection', 'pharmacySection', 'staffSection'];
     sections.forEach(id => {
@@ -47,7 +54,9 @@ function showSection(sectionId) {
     });
 
     const target = document.getElementById(sectionId + 'Section');
-    if (target) target.classList.remove('hidden');
+    if (target) {
+        target.classList.remove('hidden');
+    }
     
     if(sectionId === 'staff') renderStaff();
 }
@@ -58,6 +67,7 @@ function updateHealthTips() {
     let selectedTip;
     const card = document.getElementById('tipCard');
 
+    // Logic for 3 times a day
     if (hour >= 5 && hour < 12) selectedTip = tipsData.morning;
     else if (hour >= 12 && hour < 17) selectedTip = tipsData.afternoon;
     else selectedTip = tipsData.evening;
@@ -71,9 +81,10 @@ function updateHealthTips() {
     return selectedTip;
 }
 
+// Reminder Notification
 function setupTipReminders() {
     const tip = updateHealthTips();
-    showNotification(`💡 Health Tip: ${tip.text}`);
+    showNotification(tip.text); // Showing English tip in notification
 }
 
 // --- PATIENT MANAGEMENT ---
@@ -89,7 +100,7 @@ function savePatient() {
         localStorage.setItem('hospitalData', JSON.stringify(patients));
         renderTable();
         toggleModal();
-        showNotification("Patient Record Saved!");
+        showNotification("Patient Record Saved Successfully!");
         document.getElementById('name').value = '';
         document.getElementById('disease').value = '';
     }
@@ -107,7 +118,9 @@ function renderTable() {
             <tr class="border-b border-slate-50">
                 <td class="p-6 font-bold text-slate-800">${p.name}</td>
                 <td class="p-6"><span class="bg-cyan-50 text-cyan-600 px-3 py-1 rounded-full text-xs font-bold uppercase">${p.disease}</span></td>
-                <td class="p-6 text-right"><button onclick="deletePatient(${p.id})" class="text-rose-500 font-bold hover:bg-rose-50 px-4 py-2 rounded-xl">Remove</button></td>
+                <td class="p-6 text-right">
+                    <button onclick="deletePatient(${p.id})" class="text-rose-500 font-bold hover:bg-rose-50 px-4 py-2 rounded-xl">Delete</button>
+                </td>
             </tr>`;
     });
 }
@@ -116,7 +129,7 @@ function deletePatient(id) {
     patients = patients.filter(p => p.id !== id);
     localStorage.setItem('hospitalData', JSON.stringify(patients));
     renderTable();
-    showNotification("Patient Removed!", "error");
+    showNotification("Record Deleted!", "error");
 }
 
 // --- STAFF MANAGEMENT ---
@@ -151,24 +164,12 @@ function renderStaff() {
     `).join('');
 }
 
-function deleteStaff(id) {
-    staff = staff.filter(s => s.id !== id);
-    localStorage.setItem('hospitalStaff', JSON.stringify(staff));
-    renderStaff();
-    showNotification("Member Removed!", "error");
-}
-
-// --- PHARMACY & APPOINTMENTS ---
+// --- PHARMACY & BILLING ---
 function buyMed(name, price) {
-    const billItem = document.getElementById('billItem');
-    const billTotal = document.getElementById('billTotal');
-    const billModal = document.getElementById('billModal');
-    if (billItem && billTotal) {
-        billItem.innerText = name;
-        billTotal.innerText = "Rs. " + price;
-        billModal.classList.remove('hidden');
-        showNotification("Added to bill!");
-    }
+    document.getElementById('billItem').innerText = name;
+    document.getElementById('billTotal').innerText = "Rs. " + price;
+    document.getElementById('billModal').classList.remove('hidden');
+    showNotification("Item added to cart");
 }
 
 function closeBill() {
@@ -176,12 +177,13 @@ function closeBill() {
 }
 
 function bookAppoint() {
-    showNotification("Appointment Booked Successfully!");
+    showNotification("Appointment Confirmed!");
 }
 
-// --- INITIALIZE ---
+// --- STARTUP ---
 window.onload = () => {
     renderTable();
     updateHealthTips();
+    // Show notification tip after 3 seconds
     setTimeout(setupTipReminders, 3000);
 };
