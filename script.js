@@ -5,6 +5,30 @@ window.onload = function() {
     renderTable();
 };
 
+// --- NEW: Notification Function ---
+function showNotification(msg, type = 'success') {
+    const container = document.getElementById('notification-container');
+    if (!container) return; // Agar HTML mein container nahi hai to return ho jao
+
+    const toast = document.createElement('div');
+    
+    // Type ke hisaab se color scheme
+    const bgColor = type === 'success' ? 'bg-slate-900' : 'bg-rose-600';
+    const icon = type === 'success' ? '✨' : '🗑️';
+
+    toast.className = `${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-slide flex items-center gap-3 border-l-4 border-cyan-400 min-w-[200px]`;
+    toast.innerHTML = `<span>${icon}</span> ${msg}`;
+    
+    container.appendChild(toast);
+
+    // 3 seconds baad remove kar do
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(20px)';
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
 // 1. Sections change karne ka function
 function showSection(sectionId) {
     document.getElementById('dashboardSection').classList.add('hidden');
@@ -36,6 +60,10 @@ function savePatient() {
         localStorage.setItem('hospitalData', JSON.stringify(patients));
         renderTable();
         toggleModal();
+        
+        // Notification Add Kiya
+        showNotification("Patient Record Saved!");
+
         nameInput.value = '';
         diseaseInput.value = '';
     } else {
@@ -69,6 +97,9 @@ function deletePatient(id) {
         patients = patients.filter(p => p.id !== id);
         localStorage.setItem('hospitalData', JSON.stringify(patients));
         renderTable();
+        
+        // Notification Add Kiya
+        showNotification("Patient Removed!", "error");
     }
 }
 
@@ -92,6 +123,9 @@ function buyMed(name, price) {
         billItem.innerText = name;
         billTotal.innerText = "Rs. " + price;
         billModal.classList.remove('hidden');
+        
+        // Notification Add Kiya
+        showNotification("Item added to bill!");
     } else {
         alert("Bill: " + name + " - Rs. " + price);
     }
@@ -110,6 +144,7 @@ function bookAppoint() {
     let date = document.getElementById('appDate').value;
     let doctor = document.getElementById('docSelect').value;
     if(date) {
+        showNotification("Appointment Booked!");
         alert("Appointment confirmed with " + doctor + " on " + date);
     } else {
         alert("Please select a date!");
