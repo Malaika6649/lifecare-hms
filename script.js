@@ -23,43 +23,58 @@ function updateTips() {
     
     if(document.getElementById('healthyTip')) {
         document.getElementById('healthyTip').innerText = msg;
-        document.getElementById('tipLabel').innerText = lbl;
+        if(document.getElementById('tipLabel')) document.getElementById('tipLabel').innerText = lbl;
     }
 }
 
-// --- 2. LOGIN FUNCTION (Fixed & Attached) ---
+// --- 2. LOGIN FUNCTION (Admin vs User Logic) ---
 window.handleLogin = () => {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
 
     if (email === "admin@test.com" && pass === "123") {
         localStorage.setItem('isLoggedIn', 'true');
-        alert("Success! Unlocking Dashboard...");
-        location.reload(); // Page ko refresh karega naya view dikhane ke liye
+        localStorage.setItem('userRole', 'admin'); // Admin role save
+        alert("Admin Access Granted!");
+        location.reload();
+    } else if (email !== "" && pass !== "") {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userRole', 'user'); // Simple user role
+        alert("Patient Portal Accessed!");
+        location.reload();
     } else {
-        alert("Invalid Password! Try: 123");
+        alert("Invalid Details!");
     }
 };
 
 window.handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
+    localStorage.clear(); // Sab clear kar dega
     location.reload();
 };
 
-// --- 3. REAL-TIME DATA SYNC (Patients & Staff) ---
+// --- 3. REAL-TIME DATA SYNC ---
 function startSync() {
+    const role = localStorage.getItem('userRole');
+
     // Patient Queue (FIFO)
     onSnapshot(query(collection(db, "patients"), orderBy("time", "asc")), (snap) => {
         const list = document.getElementById('patientList');
-        const totalP = document.getElementById('totalPatients');
+        const totalP = document.getElementById('totalPatients') || document.getElementById('countP');
         if(totalP) totalP.innerText = snap.size;
+        
         if(list) {
             list.innerHTML = "";
             snap.forEach(d => {
                 const p = d.data();
-                list.innerHTML += `<tr class="border-b hover:bg-slate-50">
+                // Admin ko delete button dikhega
+                const deleteBtn = (role === 'admin') 
+                    ? `<button onclick="window.deleteDocData('patients', '${d.id}')" class="text-rose-400 font-bold ml-4">✕</button>` 
+                    : '';
+
+                list.innerHTML += `<tr class="border-b hover:bg-slate-50 transition-all">
                     <td class="p-4 font-bold">${p.name}</td>
                     <td class="p-4"><span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs">${p.disease}</span></td>
+                    <td class="p-4 text-right">${deleteBtn}</td>
                 </tr>`;
             });
         }
@@ -68,31 +83,4 @@ function startSync() {
     // Staff List
     onSnapshot(collection(db, "staff"), (snap) => {
         const staffList = document.getElementById('staffList');
-        const countS = document.getElementById('countS');
-        if(countS) countS.innerText = snap.size;
-        if(staffList) {
-            staffList.innerHTML = "";
-            snap.forEach(d => {
-                const s = d.data();
-                staffList.innerHTML += `<div class="p-4 bg-white border rounded-2xl shadow-sm flex justify-between items-center">
-                    <div><p class="font-bold">${s.name}</p><p class="text-xs text-slate-500">${s.role}</p></div>
-                </div>`;
-            });
-        }
-    });
-}
-
-// --- 4. RUN ON LOAD ---
-function init() {
-    if(localStorage.getItem('isLoggedIn') === 'true') {
-        // UI Sections Toggle
-        if(document.getElementById('authSection')) document.getElementById('authSection').classList.add('hidden');
-        if(document.getElementById('mainDashboard')) document.getElementById('mainDashboard').classList.remove('hidden');
-        
-        updateTips();
-        startSync();
-    }
-}
-
-// For module scripts, we call init directly
-init();
+        const countS = document.getElementById('
