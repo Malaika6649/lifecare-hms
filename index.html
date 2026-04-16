@@ -3,90 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeCare HMS | Premium Cloud Dashboard</title>
+    <title>LifeCare HMS | Ultimate Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #10b981; }
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            min-height: 100vh;
-        }
-        .glass-card { 
-            background: rgba(255, 255, 255, 0.7); 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255, 255, 255, 0.5); 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-card:hover { transform: translateY(-5px); }
-        .premium-grad {
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #10b981, #059669);
-            background-size: 400% 400%;
-            animation: gradientAnim 15s ease infinite;
-        }
-        @keyframes gradientAnim {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .nav-link-active { background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; min-height: 100vh; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
-        input:focus { border-color: var(--primary) !important; background: white !important; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
     </style>
 </head>
-<body class="text-slate-900 antialiased">
+<body class="text-slate-900">
 
-    <div id="notification-container" class="fixed top-6 right-6 z-[200] flex flex-col gap-3"></div>
+    <div id="notification-container" class="fixed top-6 right-6 z-[300] flex flex-col gap-3"></div>
 
     <div id="authSection" class="flex items-center justify-center min-h-screen p-6">
-        <div class="w-full max-w-[420px] glass-card rounded-[3rem] p-10 text-center">
-            <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-xl font-black mx-auto mb-6 shadow-xl shadow-emerald-500/20">LC</div>
-            <h1 class="text-3xl font-extrabold tracking-tight mb-2">Cloud Access</h1>
-            <p class="text-slate-500 mb-8 font-medium">Connect to LifeCare Cloud Database</p>
-            <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="Admin Email" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none border border-transparent">
-                <input type="password" id="loginPass" placeholder="Access Key" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none border border-transparent">
-                <button id="loginBtn" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all shadow-lg">Enter Dashboard</button>
+        <div class="w-full max-w-[420px] glass-card rounded-[3rem] p-10 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-xl font-black mx-auto mb-4">LC</div>
+                <h1 class="text-3xl font-bold">LifeCare HMS</h1>
+                <p class="text-slate-500">Cloud Healthcare Management</p>
+            </div>
+
+            <div id="loginFields" class="space-y-4">
+                <input type="email" id="loginEmail" placeholder="Email (admin@test.com)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <input type="password" id="loginPass" placeholder="Password (123)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all">Sign In</button>
+                <p class="text-center text-sm text-slate-500 mt-4">New user? <button onclick="toggleAuth(true)" class="text-emerald-600 font-bold">Create Account</button></p>
+            </div>
+
+            <div id="signupFields" class="space-y-4 hidden">
+                <input type="text" id="regName" placeholder="Full Name" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <input type="email" id="regEmail" placeholder="Email Address" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <input type="password" id="regPass" placeholder="Create Password" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <button onclick="handleSignup()" class="w-full bg-emerald-500 text-white font-bold py-4 rounded-2xl hover:bg-slate-900 transition-all">Register</button>
+                <p class="text-center text-sm text-slate-500 mt-4">Have an account? <button onclick="toggleAuth(false)" class="text-emerald-600 font-bold">Login</button></p>
             </div>
         </div>
     </div>
 
-    <div id="mainDashboard" class="hidden p-4 md:p-10 max-w-7xl mx-auto">
-        <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
-            <div>
-                <h2 class="text-4xl font-extrabold tracking-tighter">Command Center</h2>
-                <p class="text-slate-500 font-medium">HMS Backend Status: <span class="text-emerald-500 font-bold">Online</span></p>
-            </div>
+    <div id="mainDashboard" class="hidden p-6 md:p-10 max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
+            <h2 class="text-3xl font-black">Cloud Command Center</h2>
             <nav class="bg-slate-200/50 p-1.5 rounded-3xl flex gap-1">
-                <button id="btn-dashboard" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all nav-link-active">📊 Home</button>
-                <button id="btn-staff" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">👨‍⚕️ Team</button>
-                <button id="btn-pharmacy" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">💊 Store</button>
+                <button onclick="showSection('dashboard')" class="px-6 py-3 rounded-2xl font-bold">📊 Home</button>
+                <button onclick="showSection('staff')" class="px-6 py-3 rounded-2xl font-bold">👨‍⚕️ Team</button>
+                <button onclick="handleLogout()" class="px-6 py-3 rounded-2xl font-bold text-rose-500">🚪 Exit</button>
             </nav>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-            <div class="md:col-span-2 premium-grad p-8 rounded-[3rem] text-white relative overflow-hidden shadow-2xl">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Daily Insight</span>
-                <h3 class="text-2xl font-bold mt-4 leading-tight"><span id="tipEmoji">✨</span> <span id="healthyTip">Refreshing tips...</span></h3>
-                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] col-span-1 md:col-span-2">
+                <p id="tipLabel" class="text-xs font-bold opacity-50 uppercase tracking-widest">Health Tip</p>
+                <h3 id="healthyTip" class="text-2xl font-bold mt-2">Loading cloud tips...</h3>
             </div>
-            <div class="glass-card p-8 rounded-[3rem] flex flex-col justify-center text-center">
+            <div class="glass-card p-8 rounded-[2.5rem] flex flex-col justify-center text-center border-emerald-100">
                 <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Live Patients</p>
-                <h4 id="countP" class="text-4xl font-black mt-2">0</h4>
+                <h4 id="totalPatients" class="text-4xl font-black mt-2 text-emerald-500">0</h4>
             </div>
-            <div class="glass-card p-8 rounded-[3rem] flex flex-col justify-center text-center">
-                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Active Staff</p>
-                <h4 id="countS" class="text-4xl font-black mt-2 text-emerald-500">0</h4>
-            </div>
-        </div>
-
-        <div class="mb-8 relative group">
-            <input type="text" id="searchInput" placeholder="Search cloud database..." class="w-full glass-card px-12 py-5 rounded-[2rem] outline-none font-semibold text-lg">
-            <span class="absolute left-5 top-1/2 -translate-y-1/2 opacity-30 text-xl">🔍</span>
         </div>
 
         <main>
             <div id="dashboardSection" class="section">
-                <div class="flex justify-
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold px-2">Recent Records</h3>
+                    <button onclick="toggleModal('modal')" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold">+ New Patient</button>
+                </div>
+                <div class="glass-card rounded-[2.5rem] overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b">
+                            <tr><th class="p-6 text-xs font-bold text-slate-400">PATIENT NAME</th><th class="p-6 text-xs font-bold text-slate-400">CONDITION</th><th class="p-6 text-right text-xs font-bold text-slate-400">ACTION</th></tr>
+                        </thead>
+                        <tbody id="patientList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="staffSection" class="section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Our Professional Team</h3>
+                    <button onclick="toggleModal('staffModal')" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold">+ Register Staff</button>
+                </div>
+                <div id="staffList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6">
+        <div class="bg-white p-10 rounded-[3rem] w-full max-w-md">
+            <h2 class="text-2xl font-black mb-6">Add Patient</h2>
+            <div class="space-y-4">
+                <input type="text" id="name" placeholder="Name" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
+                <input type="text" id="disease" placeholder="Diagnosis" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
+                <button onclick="savePatient()" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold">Save to Cloud</button>
+                <button onclick="toggleModal('modal')" class="w-full text-slate-400 font-bold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="staffModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6">
+        <div class="bg-white p-10 rounded-[3rem] w-full max-w-md">
+            <h2 class="text-2xl font-black mb-6">Add Staff</h2>
+            <div class="space-y-4">
+                <input type="text" id="staffName" placeholder="Full Name" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
+                <input type="text" id="staffRole" placeholder="Role (e.g. Surgeon)" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
+                <button onclick="saveStaff()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">Add Member</button>
+                <button onclick="toggleModal('staffModal')" class="w-full text-slate-400 font-bold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyANCd9_8skLjVS_IaVgfbk24ZAlYeZpCR8",
+            authDomain: "lifecare-hms-117d8.firebaseapp.com",
+            projectId: "lifecare-hms-117d8",
+            storageBucket: "lifecare-hms-117d8.firebasestorage.app",
+            messagingSenderId: "489995234025",
+            appId: "1:489995234025:web:c5a7d23f71b71aa2e51e78"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- AUTH ---
+        window.handleLogin = () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            const savedEmail = localStorage.getItem('storedEmail');
+            const savedPass = localStorage.getItem('storedPass');
+
+            if((email === savedEmail && pass === savedPass) || (email === "admin@test.com" && pass === "123")) {
+                localStorage.setItem('isLoggedIn', 'true');
+                location.reload(); 
+            } else {
+                window.showNotification("Invalid Credentials!", "error");
+            }
+        };
+
+        window.handleSignup = () => {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+            if(name && email && pass) {
+                localStorage.setItem('storedEmail', email);
+                localStorage.setItem('storedPass', pass);
+                window.showNotification("Success! Please Login.");
+                window.toggleAuth(false);
+            }
+        };
+
+        window.handleLogout = () => {
+            localStorage.removeItem('isLoggedIn');
+            location.reload();
+        };
+
+        // --- DATABASE ---
+        window.savePatient = async () => {
+            const name = document.getElementById('name').value;
+            const disease = document.getElementById('disease').value;
+            if(name && disease) {
+                await addDoc(collection(db, "patients"), { name, disease, time: new Date() });
+                window.toggleModal('modal');
+                window.showNotification("Patient Cloud Record Added!");
+            }
+        };
+
+        window.saveStaff = async () => {
+            const name = document.getElementById('staffName').value;
+            const role = document.getElementById('staffRole').value;
+            if(name && role) {
+                await addDoc(collection(db, "staff"), { name, role });
+                window.toggleModal('staffModal');
+                window.showNotification("Staff Registered!");
+            }
+        };
+
+        window.deleteData = async (colName, id) => {
+            if(confirm("Delete from Cloud?")) {
+                await deleteDoc(doc(db, colName, id));
+                window.showNotification("Record Removed", "error");
+            }
+        };
+
+        // --- REALTIME SYNC ---
+        function startSync() {
+            onSnapshot(query(collection(db, "patients"), orderBy("time", "desc")), (snap) => {
+                const list = document.getElementById('patientList');
+                list.innerHTML = "";
+                document.getElementById('totalPatients').innerText = snap.size;
+                snap.forEach(d => {
+                    const p = d.data();
+                    list.innerHTML += `<tr class="border-b border-slate-50"><td class="p-6 font-bold">${p.name}</td><td class="p-6"><span class="bg-emerald-100 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold uppercase">${p.disease}</span></td><td class="p-6 text-right"><button onclick="deleteData('patients', '${d.id}')" class="text-rose-500 font-bold">Delete</button></td></tr>`;
+                });
+            });
+
+            onSnapshot(collection(db, "staff"), (snap) => {
+                const list = document.getElementById('staffList');
+                list.innerHTML = "";
+                snap.forEach(d => {
+                    const s = d.data();
+                    list.innerHTML += `<div class="bg-white p-6 rounded-[2rem] shadow-sm flex items-center justify-between"><div><h4 class="font-bold">${s.name}</h4><p class="text-emerald-500 text-xs font-bold uppercase">${s.role}</p></div><button onclick="deleteData('staff', '${d.id}')" class="text-rose-400 font-bold">✕</button></div>`;
+                });
+            });
+        }
+
+        // --- UI UTILS ---
+        window.toggleAuth = (isSignup) => {
+            document.getElementById('loginFields').classList.toggle('hidden', isSignup);
+            document.getElementById('signupFields').classList.toggle('hidden', !isSignup);
+        };
+
+        window.toggleModal = (id) => document.getElementById(id).classList.toggle('hidden');
+
+        window.showSection = (id) => {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id + 'Section').classList.remove('hidden');
+        };
+
+        window.showNotification = (msg, type = 'success') => {
+            const toast = document.createElement('div');
+            toast.className = `${type === 'success' ? 'bg-slate-900' : 'bg-rose-600'} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-bounce`;
+            toast.innerText = msg;
+            document.getElementById('notification-container').appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        };
+
+        // --- STARTUP ---
+        if(localStorage.getItem('isLoggedIn') === 'true') {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            startSync();
+            document.getElementById('healthyTip').innerText = "Morning: Stay hydrated and stay healthy! ✨";
+        }
+    </script>
+</body>
+</html>
