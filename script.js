@@ -1,10 +1,8 @@
-// --- 1. AUTHENTICATION LOGIC (NEW) ---
+// --- 1. AUTHENTICATION LOGIC (Login & Signup) ---
 
-// Screens switch karne ke liye function
 function toggleAuth(isSignup) {
     const loginFields = document.getElementById('loginFields');
     const signupFields = document.getElementById('signupFields');
-    
     if(isSignup) {
         loginFields.classList.add('hidden');
         signupFields.classList.remove('hidden');
@@ -14,7 +12,6 @@ function toggleAuth(isSignup) {
     }
 }
 
-// Signup Handle karna (Saving to LocalStorage)
 function handleSignup() {
     const name = document.getElementById('regName').value;
     const email = document.getElementById('regEmail').value;
@@ -24,40 +21,46 @@ function handleSignup() {
         localStorage.setItem('storedName', name);
         localStorage.setItem('storedEmail', email);
         localStorage.setItem('storedPass', pass);
-        
         showNotification("Account Created! Please Sign In.");
-        toggleAuth(false); // Wapis login par le jayen
+        toggleAuth(false);
     } else {
         showNotification("Please fill all fields!", "error");
     }
 }
 
-// Login Handle karna
 function handleLogin() {
     const email = document.getElementById('loginEmail').value;
     const pass = document.getElementById('loginPass').value;
-    
     const savedEmail = localStorage.getItem('storedEmail');
     const savedPass = localStorage.getItem('storedPass');
 
-    // Simple validation (User check ya Admin bypass)
     if((email === savedEmail && pass === savedPass) || (email === "admin@test.com" && pass === "123")) {
         document.getElementById('authSection').classList.add('hidden');
         document.getElementById('mainDashboard').classList.remove('hidden');
         localStorage.setItem('isLoggedIn', 'true');
+        
+        // --- CRITICAL FIX: Load all data immediately after login ---
+        loadDashboardData(); 
+        
         showNotification("Welcome back to LifeCare!");
     } else {
         showNotification("Invalid Email or Password!", "error");
     }
 }
 
-// Logout Handle karna
 function handleLogout() {
     localStorage.removeItem('isLoggedIn');
-    location.reload(); // Page refresh karke login par wapis
+    location.reload();
 }
 
-// --- 2. YOUR ORIGINAL DATA & LOGIC (KEEPING IT SAME) ---
+// Function to refresh all dashboard elements
+function loadDashboardData() {
+    renderTable();        // Show Patients
+    updateHealthTips();   // Show Morning/Evening Tips
+    renderStaff();        // Show Staff Members
+}
+
+// --- 2. YOUR ORIGINAL DATA & LOGIC ---
 
 let patients = JSON.parse(localStorage.getItem('hospitalData')) || [];
 let staff = JSON.parse(localStorage.getItem('hospitalStaff')) || [];
@@ -83,7 +86,6 @@ const tipsData = {
     }
 };
 
-// Notification System
 function showNotification(msg, type = 'success') {
     const container = document.getElementById('notification-container');
     if (!container) return;
@@ -100,7 +102,6 @@ function showNotification(msg, type = 'success') {
     }, 4000);
 }
 
-// Navigation
 function showSection(sectionId) {
     const sections = ['dashboardSection', 'appointmentsSection', 'pharmacySection', 'staffSection'];
     sections.forEach(id => {
@@ -112,11 +113,11 @@ function showSection(sectionId) {
     if(sectionId === 'staff') renderStaff();
 }
 
-// Health Tips
 function updateHealthTips() {
     const hour = new Date().getHours();
     let selectedTip;
     const card = document.getElementById('tipCard');
+
     if (hour >= 5 && hour < 12) selectedTip = tipsData.morning;
     else if (hour >= 12 && hour < 17) selectedTip = tipsData.afternoon;
     else selectedTip = tipsData.evening;
@@ -130,25 +131,26 @@ function updateHealthTips() {
     return selectedTip;
 }
 
-// Startup Check (UPDATED to handle Auth)
+// --- STARTUP LOGIC ---
 window.onload = () => {
-    // Auth Check
     if(localStorage.getItem('isLoggedIn') === 'true') {
         const authSec = document.getElementById('authSection');
         const mainDash = document.getElementById('mainDashboard');
         if(authSec) authSec.classList.add('hidden');
         if(mainDash) mainDash.classList.remove('hidden');
+        loadDashboardData(); // Load everything if already logged in
     }
 
-    renderTable();
-    updateHealthTips();
+    // Delayed Health Tip Notification
     setTimeout(() => {
-        const tip = updateHealthTips();
-        showNotification(tip.text);
+        if(localStorage.getItem('isLoggedIn') === 'true') {
+            const tip = updateHealthTips();
+            showNotification(tip.text);
+        }
     }, 3000);
 };
 
-// --- REST OF YOUR FUNCTIONS (Patient, Staff, etc.) ---
+// --- MANAGEMENT FUNCTIONS ---
 function toggleModal() { document.getElementById('modal').classList.toggle('hidden'); }
 function savePatient() {
     const name = document.getElementById('name').value;
@@ -163,6 +165,7 @@ function savePatient() {
         document.getElementById('disease').value = '';
     }
 }
+
 function renderTable() {
     const list = document.getElementById('patientList');
     const totalCount = document.getElementById('totalPatients');
@@ -173,12 +176,14 @@ function renderTable() {
         list.innerHTML += `<tr class="border-b border-slate-50"><td class="p-6 font-bold text-slate-800">${p.name}</td><td class="p-6"><span class="bg-cyan-50 text-cyan-600 px-3 py-1 rounded-full text-xs font-bold uppercase">${p.disease}</span></td><td class="p-6 text-right"><button onclick="deletePatient(${p.id})" class="text-rose-500 font-bold hover:bg-rose-50 px-4 py-2 rounded-xl">Delete</button></td></tr>`;
     });
 }
+
 function deletePatient(id) {
     patients = patients.filter(p => p.id !== id);
     localStorage.setItem('hospitalData', JSON.stringify(patients));
     renderTable();
     showNotification("Record Deleted!", "error");
 }
+
 function toggleStaffModal() { document.getElementById('staffModal').classList.toggle('hidden'); }
 function saveStaff() {
     const name = document.getElementById('staffName').value;
@@ -192,17 +197,20 @@ function saveStaff() {
         document.getElementById('staffName').value = '';
     }
 }
+
 function renderStaff() {
     const container = document.getElementById('staffList');
     if (!container) return;
     container.innerHTML = staff.map(s => `<div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center justify-between"><div><h4 class="font-bold text-slate-900">${s.name}</h4><p class="text-indigo-500 text-sm font-bold">${s.role}</p></div><button onclick="deleteStaff(${s.id})" class="text-rose-500 font-bold hover:bg-rose-50 p-2 rounded-lg">Remove</button></div>`).join('');
 }
+
 function deleteStaff(id) {
     staff = staff.filter(s => s.id !== id);
     localStorage.setItem('hospitalStaff', JSON.stringify(staff));
     renderStaff();
     showNotification("Staff Removed!", "error");
 }
+
 function buyMed(name, price) {
     document.getElementById('billItem').innerText = name;
     document.getElementById('billTotal').innerText = "Rs. " + price;
