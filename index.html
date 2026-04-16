@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeCare HMS | Ultimate Cloud</title>
+    <title>LifeCare HMS | DSA Cloud Project</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #10b981; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; min-height: 100vh; }
-        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; min-height: 100vh; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.05); transition: 0.3s; }
+        .premium-grad { background: linear-gradient(135deg, #0f172a, #1e293b); }
         .hidden { display: none !important; }
+        .nav-link-active { background: white; color: #10b981; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body class="text-slate-900">
@@ -18,61 +20,70 @@
     <div id="notification-container" class="fixed top-6 right-6 z-[300] flex flex-col gap-3"></div>
 
     <div id="authSection" class="flex items-center justify-center min-h-screen p-6">
-        <div class="w-full max-w-[420px] glass-card rounded-[3rem] p-10 shadow-2xl">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-xl font-black mx-auto mb-4">LC</div>
-                <h1 class="text-3xl font-bold">LifeCare HMS</h1>
-                <p class="text-slate-500">Cloud Healthcare Management</p>
+        <div class="w-full max-w-[400px] glass-card rounded-[3rem] p-10 text-center">
+            <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-xl font-black mx-auto mb-6 shadow-xl shadow-emerald-500/20">LC</div>
+            
+            <div id="loginFields">
+                <h1 class="text-3xl font-extrabold mb-8">Sign In</h1>
+                <div class="space-y-4">
+                    <input type="email" id="loginEmail" placeholder="Email (admin@test.com)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                    <input type="password" id="loginPass" placeholder="Password (123)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                    <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all">Enter Dashboard</button>
+                    <button onclick="toggleAuth(true)" class="text-sm text-emerald-600 font-bold mt-4">Create Account</button>
+                </div>
             </div>
 
-            <div id="loginFields" class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="Email (admin@test.com)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                <input type="password" id="loginPass" placeholder="Password (123)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all">Sign In</button>
-                <p class="text-center text-sm text-slate-500 mt-4">New user? <button onclick="toggleAuth(true)" class="text-emerald-600 font-bold">Create Account</button></p>
-            </div>
-
-            <div id="signupFields" class="space-y-4 hidden">
-                <input type="text" id="regName" placeholder="Full Name" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                <input type="email" id="regEmail" placeholder="Email Address" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                <input type="password" id="regPass" placeholder="Create Password" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                <button onclick="handleSignup()" class="w-full bg-emerald-500 text-white font-bold py-4 rounded-2xl hover:bg-slate-900 transition-all">Register</button>
-                <p class="text-center text-sm text-slate-500 mt-4">Have an account? <button onclick="toggleAuth(false)" class="text-emerald-600 font-bold">Login</button></p>
+            <div id="signupFields" class="hidden">
+                <h1 class="text-3xl font-extrabold mb-8">Create Account</h1>
+                <div class="space-y-4">
+                    <input type="text" id="regName" placeholder="Full Name" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                    <input type="email" id="regEmail" placeholder="Email Address" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                    <input type="password" id="regPass" placeholder="Password" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                    <button onclick="handleSignup()" class="w-full bg-emerald-500 text-white font-bold py-4 rounded-2xl hover:bg-slate-900 transition-all">Register</button>
+                    <button onclick="toggleAuth(false)" class="text-sm text-slate-500 font-bold mt-4 block mx-auto">Back to Login</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="mainDashboard" class="hidden p-6 md:p-10 max-w-7xl mx-auto">
-        <header class="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
-            <h2 class="text-3xl font-black">Cloud Command Center</h2>
+        <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+            <div>
+                <h2 class="text-4xl font-extrabold tracking-tight">LifeCare Cloud</h2>
+                <p class="text-slate-500 font-medium">Data Structure & Staff Management System</p>
+            </div>
             <nav class="bg-slate-200/50 p-1.5 rounded-3xl flex gap-1">
-                <button onclick="showSection('dashboard')" class="px-6 py-3 rounded-2xl font-bold">📊 Home</button>
-                <button onclick="showSection('staff')" class="px-6 py-3 rounded-2xl font-bold">👨‍⚕️ Team</button>
-                <button onclick="handleLogout()" class="px-6 py-3 rounded-2xl font-bold text-rose-500">🚪 Exit</button>
+                <button onclick="showSection('dashboard')" id="btn-dashboard" class="nav-btn px-6 py-3 rounded-2xl font-bold nav-link-active">📊 Patients</button>
+                <button onclick="showSection('staff')" id="btn-staff" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500">👨‍⚕️ Staff</button>
+                <button onclick="handleLogout()" class="px-6 py-3 rounded-2xl font-bold text-rose-500">🚪 Logout</button>
             </nav>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] col-span-1 md:col-span-2">
-                <p id="tipLabel" class="text-xs font-bold opacity-50 uppercase tracking-widest">Health Tip</p>
-                <h3 id="healthyTip" class="text-2xl font-bold mt-2">Loading cloud tips...</h3>
+            <div class="md:col-span-2 premium-grad p-8 rounded-[2.5rem] text-white shadow-2xl">
+                <span id="tipLabel" class="text-[10px] font-black uppercase tracking-widest opacity-60">Health Tip</span>
+                <h3 id="healthyTip" class="text-2xl font-bold mt-4">Loading daily tips...</h3>
             </div>
-            <div class="glass-card p-8 rounded-[2.5rem] flex flex-col justify-center text-center border-emerald-100">
-                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Live Patients</p>
+            <div class="glass-card p-8 rounded-[2.5rem] flex flex-col justify-center text-center">
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Total Patients</p>
                 <h4 id="totalPatients" class="text-4xl font-black mt-2 text-emerald-500">0</h4>
             </div>
         </div>
 
         <main>
             <div id="dashboardSection" class="section">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold px-2">Recent Records</h3>
-                    <button onclick="toggleModal('modal')" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold">+ New Patient</button>
+                <div class="flex justify-between items-center mb-6 px-2">
+                    <h3 class="text-xl font-bold text-slate-800">Patient Queue (FIFO)</h3>
+                    <button onclick="toggleModal('modal')" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-900 transition-all">+ New Patient</button>
                 </div>
                 <div class="glass-card rounded-[2.5rem] overflow-hidden">
                     <table class="w-full text-left">
                         <thead class="bg-slate-50 border-b">
-                            <tr><th class="p-6 text-xs font-bold text-slate-400">PATIENT NAME</th><th class="p-6 text-xs font-bold text-slate-400">CONDITION</th><th class="p-6 text-right text-xs font-bold text-slate-400">ACTION</th></tr>
+                            <tr>
+                                <th class="p-8 text-xs font-bold text-slate-400">PATIENT NAME</th>
+                                <th class="p-8 text-xs font-bold text-slate-400">DIAGNOSIS</th>
+                                <th class="p-8 text-right text-xs font-bold text-slate-400">ACTION</th>
+                            </tr>
                         </thead>
                         <tbody id="patientList"></tbody>
                     </table>
@@ -80,34 +91,34 @@
             </div>
 
             <div id="staffSection" class="section hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold">Our Professional Team</h3>
-                    <button onclick="toggleModal('staffModal')" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold">+ Register Staff</button>
+                <div class="flex justify-between items-center mb-8 px-2">
+                    <h3 class="text-xl font-bold text-slate-800">Hospital Staff (Count: <span id="countS">0</span>)</h3>
+                    <button onclick="toggleModal('staffModal')" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold">+ Add Staff</button>
                 </div>
                 <div id="staffList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             </div>
         </main>
     </div>
 
-    <div id="modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6">
+    <div id="modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6">
         <div class="bg-white p-10 rounded-[3rem] w-full max-w-md">
             <h2 class="text-2xl font-black mb-6">Add Patient</h2>
             <div class="space-y-4">
-                <input type="text" id="name" placeholder="Name" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
-                <input type="text" id="disease" placeholder="Diagnosis" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
-                <button onclick="savePatient()" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold">Save to Cloud</button>
+                <input type="text" id="name" placeholder="Name" class="w-full p-4 bg-slate-50 rounded-xl outline-none">
+                <input type="text" id="disease" placeholder="Disease" class="w-full p-4 bg-slate-50 rounded-xl outline-none">
+                <button onclick="savePatient()" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold shadow-lg">Save to Cloud</button>
                 <button onclick="toggleModal('modal')" class="w-full text-slate-400 font-bold">Cancel</button>
             </div>
         </div>
     </div>
 
-    <div id="staffModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6">
+    <div id="staffModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6">
         <div class="bg-white p-10 rounded-[3rem] w-full max-w-md">
-            <h2 class="text-2xl font-black mb-6">Add Staff</h2>
+            <h2 class="text-2xl font-black mb-6">Add Staff Member</h2>
             <div class="space-y-4">
-                <input type="text" id="staffName" placeholder="Full Name" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
-                <input type="text" id="staffRole" placeholder="Role (e.g. Surgeon)" class="w-full p-4 bg-slate-100 rounded-xl outline-none">
-                <button onclick="saveStaff()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">Add Member</button>
+                <input type="text" id="staffName" placeholder="Full Name" class="w-full p-4 bg-slate-50 rounded-xl outline-none">
+                <input type="text" id="staffRole" placeholder="Role (e.g. Doctor)" class="w-full p-4 bg-slate-50 rounded-xl outline-none">
+                <button onclick="saveStaff()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">Register</button>
                 <button onclick="toggleModal('staffModal')" class="w-full text-slate-400 font-bold">Cancel</button>
             </div>
         </div>
@@ -129,116 +140,63 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- HEALTHY TIPS (3 Times a Day) ---
+        function updateTips() {
+            const hr = new Date().getHours();
+            let msg = "", lbl = "";
+            if(hr >= 5 && hr < 12) { lbl = "Morning ☀️"; msg = "Drink warm water and start with a healthy breakfast!"; }
+            else if(hr >= 12 && hr < 17) { lbl = "Afternoon 🌤️"; msg = "Stay hydrated and take small walks during work."; }
+            else { lbl = "Evening 🌙"; msg = "Eat a light dinner and sleep at least 8 hours."; }
+            document.getElementById('healthyTip').innerText = msg;
+            document.getElementById('tipLabel').innerText = lbl;
+        }
+
         // --- AUTH ---
         window.handleLogin = () => {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            const savedEmail = localStorage.getItem('storedEmail');
-            const savedPass = localStorage.getItem('storedPass');
-
-            if((email === savedEmail && pass === savedPass) || (email === "admin@test.com" && pass === "123")) {
+            const e = document.getElementById('loginEmail').value;
+            const p = document.getElementById('loginPass').value;
+            if((e === "admin@test.com" && p === "123") || (e === localStorage.getItem('storedEmail') && p === localStorage.getItem('storedPass'))) {
                 localStorage.setItem('isLoggedIn', 'true');
-                location.reload(); 
-            } else {
-                window.showNotification("Invalid Credentials!", "error");
-            }
+                location.reload();
+            } else { window.showNotification("Login Failed!", "error"); }
         };
 
         window.handleSignup = () => {
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const pass = document.getElementById('regPass').value;
-            if(name && email && pass) {
-                localStorage.setItem('storedEmail', email);
-                localStorage.setItem('storedPass', pass);
-                window.showNotification("Success! Please Login.");
+            const n = document.getElementById('regName').value;
+            const e = document.getElementById('regEmail').value;
+            const p = document.getElementById('regPass').value;
+            if(n && e && p) {
+                localStorage.setItem('storedEmail', e);
+                localStorage.setItem('storedPass', p);
+                window.showNotification("Account Ready!");
                 window.toggleAuth(false);
             }
         };
 
-        window.handleLogout = () => {
-            localStorage.removeItem('isLoggedIn');
-            location.reload();
-        };
+        window.handleLogout = () => { localStorage.removeItem('isLoggedIn'); location.reload(); };
 
-        // --- DATABASE ---
-        window.savePatient = async () => {
-            const name = document.getElementById('name').value;
-            const disease = document.getElementById('disease').value;
-            if(name && disease) {
-                await addDoc(collection(db, "patients"), { name, disease, time: new Date() });
-                window.toggleModal('modal');
-                window.showNotification("Patient Cloud Record Added!");
-            }
-        };
-
-        window.saveStaff = async () => {
-            const name = document.getElementById('staffName').value;
-            const role = document.getElementById('staffRole').value;
-            if(name && role) {
-                await addDoc(collection(db, "staff"), { name, role });
-                window.toggleModal('staffModal');
-                window.showNotification("Staff Registered!");
-            }
-        };
-
-        window.deleteData = async (colName, id) => {
-            if(confirm("Delete from Cloud?")) {
-                await deleteDoc(doc(db, colName, id));
-                window.showNotification("Record Removed", "error");
-            }
-        };
-
-        // --- REALTIME SYNC ---
+        // --- CLOUD SYNC ---
         function startSync() {
-            onSnapshot(query(collection(db, "patients"), orderBy("time", "desc")), (snap) => {
+            // FIFO Queue (Ordered by time)
+            onSnapshot(query(collection(db, "patients"), orderBy("time", "asc")), (snap) => {
                 const list = document.getElementById('patientList');
-                list.innerHTML = "";
                 document.getElementById('totalPatients').innerText = snap.size;
+                list.innerHTML = "";
                 snap.forEach(d => {
                     const p = d.data();
-                    list.innerHTML += `<tr class="border-b border-slate-50"><td class="p-6 font-bold">${p.name}</td><td class="p-6"><span class="bg-emerald-100 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold uppercase">${p.disease}</span></td><td class="p-6 text-right"><button onclick="deleteData('patients', '${d.id}')" class="text-rose-500 font-bold">Delete</button></td></tr>`;
+                    list.innerHTML += `<tr class="hover:bg-slate-50 border-b border-slate-50">
+                        <td class="p-8 font-bold">${p.name}</td>
+                        <td class="p-8"><span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">${p.disease}</span></td>
+                        <td class="p-8 text-right"><button onclick="deleteData('patients', '${d.id}')" class="text-rose-400 font-bold hover:text-rose-600 transition-all">Remove</button></td>
+                    </tr>`;
                 });
             });
 
+            // Staff List
             onSnapshot(collection(db, "staff"), (snap) => {
                 const list = document.getElementById('staffList');
+                document.getElementById('countS').innerText = snap.size;
                 list.innerHTML = "";
                 snap.forEach(d => {
                     const s = d.data();
-                    list.innerHTML += `<div class="bg-white p-6 rounded-[2rem] shadow-sm flex items-center justify-between"><div><h4 class="font-bold">${s.name}</h4><p class="text-emerald-500 text-xs font-bold uppercase">${s.role}</p></div><button onclick="deleteData('staff', '${d.id}')" class="text-rose-400 font-bold">✕</button></div>`;
-                });
-            });
-        }
-
-        // --- UI UTILS ---
-        window.toggleAuth = (isSignup) => {
-            document.getElementById('loginFields').classList.toggle('hidden', isSignup);
-            document.getElementById('signupFields').classList.toggle('hidden', !isSignup);
-        };
-
-        window.toggleModal = (id) => document.getElementById(id).classList.toggle('hidden');
-
-        window.showSection = (id) => {
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id + 'Section').classList.remove('hidden');
-        };
-
-        window.showNotification = (msg, type = 'success') => {
-            const toast = document.createElement('div');
-            toast.className = `${type === 'success' ? 'bg-slate-900' : 'bg-rose-600'} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-bounce`;
-            toast.innerText = msg;
-            document.getElementById('notification-container').appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        };
-
-        // --- STARTUP ---
-        if(localStorage.getItem('isLoggedIn') === 'true') {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-            startSync();
-            document.getElementById('healthyTip').innerText = "Morning: Stay hydrated and stay healthy! ✨";
-        }
-    </script>
-</body>
-</html>
+                    list
