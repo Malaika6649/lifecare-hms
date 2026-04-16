@@ -11,9 +11,8 @@
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            min-height: screen;
+            min-height: 100vh;
         }
-        /* Floating Glass Effect */
         .glass-card { 
             background: rgba(255, 255, 255, 0.7); 
             backdrop-filter: blur(20px); 
@@ -23,7 +22,6 @@
         }
         .glass-card:hover { transform: translateY(-5px); box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.08); }
         
-        /* Animated Gradient for Tip Card */
         .premium-grad {
             background: linear-gradient(-45deg, #0f172a, #1e293b, #10b981, #059669);
             background-size: 400% 400%;
@@ -35,10 +33,9 @@
             100% { background-position: 0% 50%; }
         }
 
-        .nav-link-active { background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .nav-link-active { background: white !important; color: var(--primary) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
         
-        /* Custom Input Appearance */
         input { transition: all 0.3s ease; border: 1px solid transparent !important; }
         input:focus { border-color: var(--primary) !important; background: white !important; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
     </style>
@@ -64,14 +61,15 @@
         
         <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
             <div>
-                <h2 class="text-4xl font-extrabold tracking-tighter">Command Center</h2>
-                <p class="text-slate-500 font-medium">Hello Admin, here's what's happening today.</p>
+                <h2 id="dashboardTitle" class="text-4xl font-extrabold tracking-tighter">Command Center</h2>
+                <p id="welcomeMsg" class="text-slate-500 font-medium italic">Hello, welcome to LifeCare HMS.</p>
             </div>
             <nav class="bg-slate-200/50 p-1.5 rounded-3xl flex gap-1">
                 <button onclick="showSection('dashboard')" id="btn-dashboard" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all nav-link-active">📊 Home</button>
                 <button onclick="showSection('appointments')" id="btn-appointments" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">📅 Visits</button>
                 <button onclick="showSection('pharmacy')" id="btn-pharmacy" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">💊 Store</button>
                 <button onclick="showSection('staff')" id="btn-staff" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">👨‍⚕️ Team</button>
+                <button onclick="handleLogout()" class="px-6 py-3 rounded-2xl font-bold text-rose-500 transition-all">🚪 Logout</button>
             </nav>
         </header>
 
@@ -92,7 +90,7 @@
         </div>
 
         <div class="mb-8 relative group">
-            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search patient database..." class="w-full glass-card px-12 py-5 rounded-[2rem] outline-none font-semibold text-lg">
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search database..." class="w-full glass-card px-12 py-5 rounded-[2rem] outline-none font-semibold text-lg">
             <span class="absolute left-5 top-1/2 -translate-y-1/2 opacity-30 text-xl">🔍</span>
         </div>
 
@@ -100,12 +98,12 @@
             <div id="dashboardSection" class="section">
                 <div class="flex justify-between items-center mb-6 px-4">
                     <h3 class="text-xl font-bold">Recent Admissions</h3>
-                    <button onclick="toggleModal('modal')" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-900 transition-all">+ Add Record</button>
+                    <button id="addPatientBtn" onclick="toggleModal('modal')" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-900 transition-all">+ Add Record</button>
                 </div>
                 <div class="glass-card rounded-[3rem] overflow-hidden">
                     <table class="w-full text-left">
                         <thead class="bg-slate-50/50 border-b border-slate-100">
-                            <tr><th class="p-8 text-xs font-black uppercase text-slate-400">Name</th><th class="p-8 text-xs font-black uppercase text-slate-400">Condition</th><th class="p-8 text-right text-xs font-black uppercase text-slate-400">Action</th></tr>
+                            <tr><th class="p-8 text-xs font-black uppercase text-slate-400">Name</th><th class="p-8 text-xs font-black uppercase text-slate-400">Condition</th><th id="actionHead" class="p-8 text-right text-xs font-black uppercase text-slate-400">Action</th></tr>
                         </thead>
                         <tbody id="patientList" class="divide-y divide-slate-50"></tbody>
                     </table>
@@ -120,15 +118,20 @@
                         <p class="text-emerald-500 font-black mt-2 text-2xl">Rs. 80</p>
                         <button onclick="buyMed('Panadol', 80)" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Purchase</button>
                     </div>
-                    </div>
+                </div>
             </div>
 
             <div id="staffSection" class="section hidden">
                 <div class="flex justify-between items-center mb-8 px-4">
                     <h3 class="text-xl font-bold">Professional Team</h3>
-                    <button onclick="toggleModal('staffModal')" class="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold">+ Register Staff</button>
+                    <button id="addStaffBtn" onclick="toggleModal('staffModal')" class="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold">+ Register Staff</button>
                 </div>
                 <div id="staffList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+
+            <div id="appointmentsSection" class="section hidden p-10 text-center glass-card rounded-[3rem]">
+                <h3 class="text-2xl font-bold">No Visits Scheduled</h3>
+                <p class="text-slate-500">All appointments are currently cleared.</p>
             </div>
         </main>
     </div>
@@ -145,9 +148,22 @@
         </div>
     </div>
 
+    <div id="staffModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-[200] flex items-center justify-center p-6">
+        <div class="bg-white p-12 rounded-[3.5rem] w-full max-w-md shadow-2xl">
+            <h2 class="text-3xl font-black mb-8 text-center tracking-tight">Register Staff</h2>
+            <div class="space-y-4">
+                <input type="text" id="sName" placeholder="Full Name" class="w-full p-5 bg-slate-50 rounded-2xl outline-none">
+                <input type="text" id="sRole" placeholder="Role (e.g. Doctor)" class="w-full p-5 bg-slate-50 rounded-2xl outline-none">
+                <button onclick="saveStaff()" class="w-full bg-indigo-600 text-white py-5 rounded-2xl font-bold shadow-xl">Confirm Staff</button>
+                <button onclick="toggleModal('staffModal')" class="w-full py-4 text-slate-400 font-bold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let patients = JSON.parse(localStorage.getItem('hospitalData')) || [];
         let staff = JSON.parse(localStorage.getItem('hospitalStaff')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 
         const tips = {
             morning: { text: "Drink warm water with lemon to start your day.", emoji: "🍋" },
@@ -158,13 +174,45 @@
         function handleLogin() {
             const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
             if(e && p) {
+                // Admin logic
+                const role = (e === "admin@test.com" && p === "123") ? "admin" : "user";
+                currentUser = { email: e, role: role };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('mainDashboard').classList.remove('hidden');
                 loadAll();
             }
         }
 
-        function loadAll() { renderTable(); renderStaff(); updateTips(); }
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            location.reload();
+        }
+
+        function loadAll() { 
+            applyRolePermissions();
+            renderTable(); 
+            renderStaff(); 
+            updateTips(); 
+        }
+
+        function applyRolePermissions() {
+            if(!currentUser) return;
+            const isAdmin = currentUser.role === "admin";
+            
+            // UI elements for admin only
+            if(!isAdmin) {
+                if(document.getElementById('addPatientBtn')) document.getElementById('addPatientBtn').classList.add('hidden');
+                if(document.getElementById('addStaffBtn')) document.getElementById('addStaffBtn').classList.add('hidden');
+                if(document.getElementById('actionHead')) document.getElementById('actionHead').classList.add('hidden');
+                document.getElementById('dashboardTitle').innerText = "Patient Portal";
+                document.getElementById('welcomeMsg').innerText = "Accessing real-time health data.";
+            } else {
+                document.getElementById('dashboardTitle').innerText = "Command Center";
+                document.getElementById('welcomeMsg').innerText = "Hello Admin, system is under your control.";
+            }
+        }
 
         function updateTips() {
             const h = new Date().getHours();
@@ -181,29 +229,58 @@
         }
 
         function renderTable() {
+            const isAdmin = currentUser && currentUser.role === "admin";
             document.getElementById('patientList').innerHTML = patients.map(p => `
                 <tr class="hover:bg-slate-50/80 transition-all">
                     <td class="p-8 font-bold text-slate-800">${p.name}</td>
                     <td class="p-8"><span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">${p.disease}</span></td>
-                    <td class="p-8 text-right"><button onclick="deletePatient(${p.id})" class="text-rose-400 hover:text-rose-600 font-bold px-4 py-2 rounded-xl transition-all">Delete</button></td>
+                    <td class="p-8 text-right ${isAdmin ? '' : 'hidden'}">
+                        <button onclick="deletePatient(${p.id})" class="text-rose-400 hover:text-rose-600 font-bold px-4 py-2 rounded-xl transition-all">Delete</button>
+                    </td>
                 </tr>`).join('');
             document.getElementById('countP').innerText = patients.length;
         }
 
         function savePatient() {
             const n = document.getElementById('name').value, d = document.getElementById('disease').value;
-            if(n && d) { patients.push({id: Date.now(), name: n, disease: d}); localStorage.setItem('hospitalData', JSON.stringify(patients)); renderTable(); toggleModal('modal'); showNotification("Success: Patient Added"); }
+            if(n && d) { 
+                patients.push({id: Date.now(), name: n, disease: d}); 
+                localStorage.setItem('hospitalData', JSON.stringify(patients)); 
+                renderTable(); toggleModal('modal'); 
+                showNotification("Success: Patient Added"); 
+            }
         }
 
-        function deletePatient(id) { patients = patients.filter(p => p.id !== id); localStorage.setItem('hospitalData', JSON.stringify(patients)); renderTable(); }
+        function deletePatient(id) { 
+            patients = patients.filter(p => p.id !== id); 
+            localStorage.setItem('hospitalData', JSON.stringify(patients)); 
+            renderTable(); 
+        }
 
         function renderStaff() {
+            const isAdmin = currentUser && currentUser.role === "admin";
             document.getElementById('staffList').innerHTML = staff.map(s => `
                 <div class="glass-card p-8 rounded-[3rem] flex justify-between items-center group">
                     <div><h4 class="font-bold text-lg">${s.name}</h4><p class="text-emerald-500 text-[10px] font-black uppercase mt-1 tracking-widest">${s.role}</p></div>
-                    <button onclick="deleteStaff(${s.id})" class="opacity-0 group-hover:opacity-100 transition-all text-rose-500">✕</button>
+                    <button onclick="deleteStaff(${s.id})" class="${isAdmin ? 'group-hover:opacity-100' : 'hidden'} opacity-0 transition-all text-rose-500">✕</button>
                 </div>`).join('');
             document.getElementById('countS').innerText = staff.length;
+        }
+
+        function saveStaff() {
+            const n = document.getElementById('sName').value, r = document.getElementById('sRole').value;
+            if(n && r) {
+                staff.push({id: Date.now(), name: n, role: r});
+                localStorage.setItem('hospitalStaff', JSON.stringify(staff));
+                renderStaff(); toggleModal('staffModal');
+                showNotification("Success: Staff Registered");
+            }
+        }
+
+        function deleteStaff(id) {
+            staff = staff.filter(s => s.id !== id);
+            localStorage.setItem('hospitalStaff', JSON.stringify(staff));
+            renderStaff();
         }
 
         function searchTable() {
@@ -220,11 +297,20 @@
         function showNotification(m) {
             const c = document.getElementById('notification-container');
             const n = document.createElement('div');
-            n.className = "bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl font-bold animate-slide-in";
+            n.className = "bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl font-bold";
             n.innerText = m; c.appendChild(n); setTimeout(() => n.remove(), 3000);
         }
 
         function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+        // Persistent Login Check
+        window.onload = () => {
+            if(currentUser) {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('mainDashboard').classList.remove('hidden');
+                loadAll();
+            }
+        };
     </script>
 </body>
 </html>
