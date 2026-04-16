@@ -3,138 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeCare HMS | Modern</title>
+    <title>LifeCare HMS | Modern Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
 
+    <div id="notification-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-3"></div>
+
     <div id="authSection" class="flex items-center justify-center min-h-screen p-4 bg-[#f1f5f9]">
         <div class="w-full max-w-[420px] bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
-            
             <div class="bg-slate-900 p-10 text-center text-white">
                 <div class="w-12 h-12 bg-cyan-500 rounded-xl flex items-center justify-center text-sm font-black mx-auto mb-4">LC</div>
                 <h1 class="text-2xl font-bold tracking-tight">LifeCare <span class="text-cyan-400 font-light">Portal</span></h1>
             </div>
-
             <div class="p-10">
                 <div id="loginFields" class="space-y-4">
                     <h2 class="text-xl font-bold text-slate-800 mb-6 text-center">Welcome Back</h2>
-                    <input type="email" id="loginEmail" placeholder="Email Address" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
-                    <input type="password" id="loginPass" placeholder="Password" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
+                    <input type="email" id="loginEmail" placeholder="Email (admin@test.com)" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
+                    <input type="password" id="loginPass" placeholder="Password (123)" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
                     <button onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-cyan-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Sign In</button>
-                    <p class="text-center text-sm text-slate-500 mt-4">Don't have an account? <a href="#" onclick="toggleAuth(true)" class="text-cyan-600 font-bold">Sign Up</a></p>
+                    <p class="text-center text-sm text-slate-500 mt-4">New here? <a href="#" onclick="toggleAuth(true)" class="text-cyan-600 font-bold">Create Account</a></p>
                 </div>
-
                 <div id="signupFields" class="hidden space-y-4">
                     <h2 class="text-xl font-bold text-slate-800 mb-6 text-center">Create Account</h2>
                     <input type="text" id="regName" placeholder="Full Name" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
                     <input type="email" id="regEmail" placeholder="Email Address" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
                     <input type="password" id="regPass" placeholder="Password" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
-                    <button onclick="handleSignup()" class="w-full bg-cyan-500 hover:bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Register</button>
-                    <p class="text-center text-sm text-slate-500 mt-4">Already have account? <a href="#" onclick="toggleAuth(false)" class="text-slate-900 font-bold">Login</a></p>
+                    <button onclick="handleSignup()" class="w-full bg-cyan-500 hover:bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Register Now</button>
+                    <p class="text-center text-sm text-slate-500 mt-4">Already have an account? <a href="#" onclick="toggleAuth(false)" class="text-slate-900 font-bold">Login</a></p>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="mainDashboard" class="hidden flex flex-col md:flex-row h-screen overflow-hidden">
-        
         <aside class="w-full md:w-72 bg-slate-900 text-slate-300 shadow-2xl flex flex-col h-auto md:h-full">
-            <div class="p-6 md:p-8 text-xl md:2xl font-black text-white border-b border-slate-800 flex items-center gap-2">
-                <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-xs text-white">LC</div>
-                Life<span class="text-cyan-400">Care+</span>
+            <div class="p-8 text-2xl font-black text-white border-b border-slate-800 flex items-center gap-2">
+                <div class="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-xs">LC</div> LifeCare+
             </div>
-            <nav class="p-4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto custom-scrollbar flex-1">
-                <button onclick="showSection('dashboard')" class="whitespace-nowrap flex-1 md:w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
-                    📊 <span class="hidden md:inline">Dashboard</span>
-                </button>
-                <button onclick="showSection('appointments')" class="whitespace-nowrap flex-1 md:w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
-                    📅 <span class="hidden md:inline">Appointments</span>
-                </button>
-                <button onclick="showSection('pharmacy')" class="whitespace-nowrap flex-1 md:w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
-                    💊 <span class="hidden md:inline">Pharmacy</span>
-                </button>
-                <button onclick="showSection('staff')" class="whitespace-nowrap flex-1 md:w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 transition-all flex items-center gap-3 font-semibold">
-                    👨‍⚕️ <span class="hidden md:inline">Staff & Doctors</span>
-                </button>
+            <nav class="p-4 flex flex-col gap-2 flex-1">
+                <button onclick="showSection('dashboard')" class="w-full text-left py-3 px-4 rounded-xl bg-slate-800 text-cyan-400 flex items-center gap-3 font-semibold">📊 Dashboard</button>
+                <button onclick="showSection('staff')" class="w-full text-left py-3 px-4 rounded-xl hover:bg-slate-800 hover:text-cyan-400 flex items-center gap-3 font-semibold">👨‍⚕️ Staff Management</button>
             </nav>
             <div class="p-4 border-t border-slate-800">
-                <button onclick="handleLogout()" class="w-full py-3 px-4 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all font-bold flex items-center gap-3">
-                    🚪 <span>Logout</span>
-                </button>
+                <button onclick="handleLogout()" class="w-full py-3 px-4 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all font-bold">🚪 Logout</button>
             </div>
         </aside>
 
-        <main class="flex-1 p-4 md:p-10 overflow-y-auto bg-[#f8fafc]">
+        <main class="flex-1 p-6 md:p-10 overflow-y-auto bg-[#f8fafc]">
             <div id="dashboardSection">
-                <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900">Hospital Dashboard</h1>
-                    <button onclick="toggleModal()" class="w-full md:w-auto bg-cyan-500 text-white px-8 py-3.5 rounded-2xl font-bold shadow-lg">
-                        + Add Patient
-                    </button>
-                </header>
+                <div id="tipCard" class="p-8 rounded-[2rem] shadow-xl text-white mb-8 relative overflow-hidden transition-all duration-700">
+                    <div class="relative z-10">
+                        <span id="tipTime" class="text-xs font-bold uppercase tracking-widest opacity-80">Loading Tip...</span>
+                        <h2 class="text-2xl md:text-3xl font-black mt-2 flex items-center gap-3">
+                            <span id="tipEmoji">✨</span> <span id="healthyTip">Please wait...</span>
+                        </h2>
+                    </div>
                 </div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-extrabold text-slate-900">Patients List</h1>
+                    <button onclick="toggleModal()" class="bg-cyan-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg">+ Add Patient</button>
+                </div>
+
+                <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 text-slate-400 text-xs uppercase font-bold tracking-wider">
+                            <tr><th class="p-6">Patient Name</th><th class="p-6">Disease</th><th class="p-6 text-right">Action</th></tr>
+                        </thead>
+                        <tbody id="patientList"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="staffSection" class="hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-extrabold text-slate-900">Hospital Staff</h1>
+                    <button onclick="toggleStaffModal()" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg">+ Add Staff</button>
+                </div>
+                <div id="staffList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
         </main>
     </div>
 
+    <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-[110] flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[2.5rem] w-full max-w-md shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6">Add New Patient</h2>
+            <input type="text" id="name" placeholder="Patient Name" class="w-full p-4 mb-4 bg-slate-50 border rounded-2xl outline-none">
+            <input type="text" id="disease" placeholder="Disease" class="w-full p-4 mb-6 bg-slate-50 border rounded-2xl outline-none">
+            <div class="flex gap-3">
+                <button onclick="savePatient()" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold">Save Record</button>
+                <button onclick="toggleModal()" class="flex-1 bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="staffModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-[110] flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[2.5rem] w-full max-w-md shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6">Add Staff Member</h2>
+            <input type="text" id="staffName" placeholder="Full Name" class="w-full p-4 mb-4 bg-slate-50 border rounded-2xl outline-none">
+            <select id="staffRole" class="w-full p-4 mb-6 bg-slate-50 border rounded-2xl outline-none">
+                <option value="Doctor">Doctor</option>
+                <option value="Nurse">Nurse</option>
+                <option value="Pharmacist">Pharmacist</option>
+            </select>
+            <div class="flex gap-3">
+                <button onclick="saveStaff()" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold">Add Staff</button>
+                <button onclick="toggleStaffModal()" class="flex-1 bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Toggle between Login and Signup
+        let patients = JSON.parse(localStorage.getItem('hospitalData')) || [];
+        let staff = JSON.parse(localStorage.getItem('hospitalStaff')) || [];
+
+        const tipsData = {
+            morning: { text: "Morning: Start your day with a glass of warm water and a healthy breakfast.", emoji: "☀️", color: "from-orange-400 to-yellow-500", label: "Morning Health Tip" },
+            afternoon: { text: "Afternoon: Stay hydrated! Drink plenty of water and add salad to your lunch.", emoji: "🌤️", color: "from-cyan-500 to-blue-600", label: "Afternoon Health Tip" },
+            evening: { text: "Evening: Have a light dinner and take a 15-minute walk before going to bed.", emoji: "🌙", color: "from-indigo-800 to-slate-900", label: "Evening Health Tip" }
+        };
+
+        // Auth Functions
         function toggleAuth(isSignup) {
             document.getElementById('loginFields').classList.toggle('hidden', isSignup);
             document.getElementById('signupFields').classList.toggle('hidden', !isSignup);
         }
 
-        // Logic for Signup
         function handleSignup() {
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
             const pass = document.getElementById('regPass').value;
-
             if(name && email && pass) {
                 localStorage.setItem('storedEmail', email);
                 localStorage.setItem('storedPass', pass);
-                localStorage.setItem('userName', name);
-                alert("Account Created! Now please Login.");
+                showNotification("Account Created! Login now.");
                 toggleAuth(false);
-            } else {
-                alert("Please fill all details.");
-            }
+            } else { showNotification("Fill all fields!", "error"); }
         }
 
-        // Logic for Login
         function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
             const sEmail = localStorage.getItem('storedEmail');
             const sPass = localStorage.getItem('storedPass');
 
-            if(email === sEmail && pass === sPass) {
+            if((email === sEmail && pass === sPass) || (email === "admin@test.com" && pass === "123")) {
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('mainDashboard').classList.remove('hidden');
                 localStorage.setItem('isLoggedIn', 'true');
-            } else {
-                alert("Invalid Credentials! Please Signup first.");
+                loadDashboardData();
+                showNotification("Welcome Back!");
+            } else { showNotification("Invalid Login!", "error"); }
+        }
+
+        function handleLogout() { localStorage.clear(); location.reload(); }
+
+        // Dashboard Functions
+        function loadDashboardData() {
+            renderTable();
+            renderStaff();
+            updateHealthTips();
+        }
+
+        function updateHealthTips() {
+            const hour = new Date().getHours();
+            let tip;
+            if (hour >= 5 && hour < 12) tip = tipsData.morning;
+            else if (hour >= 12 && hour < 17) tip = tipsData.afternoon;
+            else tip = tipsData.evening;
+
+            const card = document.getElementById('tipCard');
+            if(card) {
+                document.getElementById('healthyTip').innerText = tip.text;
+                document.getElementById('tipTime').innerText = tip.label;
+                document.getElementById('tipEmoji').innerText = tip.emoji;
+                card.className = `p-8 rounded-[2rem] shadow-xl text-white mb-8 relative overflow-hidden bg-gradient-to-r ${tip.color}`;
+            }
+            return tip;
+        }
+
+        function renderTable() {
+            const list = document.getElementById('patientList');
+            if (!list) return;
+            list.innerHTML = patients.map(p => `
+                <tr class="border-b border-slate-50">
+                    <td class="p-6 font-bold text-slate-800">${p.name}</td>
+                    <td class="p-6"><span class="bg-cyan-50 text-cyan-600 px-3 py-1 rounded-full text-xs font-bold uppercase">${p.disease}</span></td>
+                    <td class="p-6 text-right"><button onclick="deletePatient(${p.id})" class="text-rose-500 font-bold hover:bg-rose-50 px-4 py-2 rounded-xl">Delete</button></td>
+                </tr>`).join('');
+        }
+
+        function savePatient() {
+            const name = document.getElementById('name').value;
+            const disease = document.getElementById('disease').value;
+            if(name && disease) {
+                patients.push({ id: Date.now(), name, disease });
+                localStorage.setItem('hospitalData', JSON.stringify(patients));
+                renderTable(); toggleModal();
+                showNotification("Patient Added!");
+                document.getElementById('name').value = ''; document.getElementById('disease').value = '';
             }
         }
 
-        function handleLogout() {
-            localStorage.removeItem('isLoggedIn');
-            location.reload();
+        function deletePatient(id) {
+            patients = patients.filter(p => p.id !== id);
+            localStorage.setItem('hospitalData', JSON.stringify(patients));
+            renderTable();
         }
 
-        // Check login on Page Load
-        window.onload = function() {
+        function renderStaff() {
+            const list = document.getElementById('staffList');
+            if(!list) return;
+            list.innerHTML = staff.map(s => `
+                <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div><h4 class="font-bold text-slate-900">${s.name}</h4><p class="text-indigo-500 text-sm font-bold uppercase">${s.role}</p></div>
+                    <button onclick="deleteStaff(${s.id})" class="text-rose-400 hover:text-rose-600 font-bold">Remove</button>
+                </div>`).join('');
+        }
+
+        function saveStaff() {
+            const name = document.getElementById('staffName').value;
+            const role = document.getElementById('staffRole').value;
+            if(name) {
+                staff.push({ id: Date.now(), name, role });
+                localStorage.setItem('hospitalStaff', JSON.stringify(staff));
+                renderStaff(); toggleStaffModal();
+                showNotification("Staff Member Added!");
+                document.getElementById('staffName').value = '';
+            }
+        }
+
+        function deleteStaff(id) {
+            staff = staff.filter(s => s.id !== id);
+            localStorage.setItem('hospitalStaff', JSON.stringify(staff));
+            renderStaff();
+        }
+
+        function showSection(id) {
+            document.getElementById('dashboardSection').classList.toggle('hidden', id !== 'dashboard');
+            document.getElementById('staffSection').classList.toggle('hidden', id !== 'staff');
+        }
+
+        function showNotification(msg, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            toast.className = `${type === 'success' ? 'bg-slate-900' : 'bg-rose-600'} text-white px-6 py-4 rounded-2xl shadow-2xl font-bold animate-bounce`;
+            toast.innerHTML = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function toggleModal() { document.getElementById('modal').classList.toggle('hidden'); }
+        function toggleStaffModal() { document.getElementById('staffModal').classList.toggle('hidden'); }
+
+        window.onload = () => {
             if(localStorage.getItem('isLoggedIn') === 'true') {
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('mainDashboard').classList.remove('hidden');
+                loadDashboardData();
             }
-        }
+        };
     </script>
 </body>
 </html>
