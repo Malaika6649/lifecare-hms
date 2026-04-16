@@ -14,19 +14,30 @@
 </head>
 <body class="bg-slate-50 text-slate-900">
 
-    <div id="loginSection" class="flex items-center justify-center min-h-screen p-4 bg-[#f1f5f9]">
-        <div class="w-full max-w-[400px] bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+    <div id="authSection" class="flex items-center justify-center min-h-screen p-4 bg-[#f1f5f9]">
+        <div class="w-full max-w-[420px] bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden">
+            
             <div class="bg-slate-900 p-10 text-center text-white">
                 <div class="w-12 h-12 bg-cyan-500 rounded-xl flex items-center justify-center text-sm font-black mx-auto mb-4">LC</div>
                 <h1 class="text-2xl font-bold tracking-tight">LifeCare <span class="text-cyan-400 font-light">Portal</span></h1>
             </div>
+
             <div class="p-10">
-                <h2 class="text-xl font-bold text-slate-800 mb-6 text-center">Sign In to Dashboard</h2>
-                <div class="space-y-4">
+                <div id="loginFields" class="space-y-4">
+                    <h2 class="text-xl font-bold text-slate-800 mb-6 text-center">Welcome Back</h2>
                     <input type="email" id="loginEmail" placeholder="Email Address" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
                     <input type="password" id="loginPass" placeholder="Password" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
-                    <button onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-cyan-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Login Now</button>
-                    <p class="text-center text-xs text-slate-400 pt-4 italic">Try any email/pass for demo</p>
+                    <button onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-cyan-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Sign In</button>
+                    <p class="text-center text-sm text-slate-500 mt-4">Don't have an account? <a href="#" onclick="toggleAuth(true)" class="text-cyan-600 font-bold">Sign Up</a></p>
+                </div>
+
+                <div id="signupFields" class="hidden space-y-4">
+                    <h2 class="text-xl font-bold text-slate-800 mb-6 text-center">Create Account</h2>
+                    <input type="text" id="regName" placeholder="Full Name" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
+                    <input type="email" id="regEmail" placeholder="Email Address" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
+                    <input type="password" id="regPass" placeholder="Password" class="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:border-cyan-500 outline-none transition-all">
+                    <button onclick="handleSignup()" class="w-full bg-cyan-500 hover:bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Register</button>
+                    <p class="text-center text-sm text-slate-500 mt-4">Already have account? <a href="#" onclick="toggleAuth(false)" class="text-slate-900 font-bold">Login</a></p>
                 </div>
             </div>
         </div>
@@ -64,4 +75,66 @@
             <div id="dashboardSection">
                 <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                     <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900">Hospital Dashboard</h1>
-                    <button onclick="toggleModal()" class="w-full md:w-auto bg-cyan-500 text-white px-8 py-3.5 rounded-2xl
+                    <button onclick="toggleModal()" class="w-full md:w-auto bg-cyan-500 text-white px-8 py-3.5 rounded-2xl font-bold shadow-lg">
+                        + Add Patient
+                    </button>
+                </header>
+                </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle between Login and Signup
+        function toggleAuth(isSignup) {
+            document.getElementById('loginFields').classList.toggle('hidden', isSignup);
+            document.getElementById('signupFields').classList.toggle('hidden', !isSignup);
+        }
+
+        // Logic for Signup
+        function handleSignup() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+
+            if(name && email && pass) {
+                localStorage.setItem('storedEmail', email);
+                localStorage.setItem('storedPass', pass);
+                localStorage.setItem('userName', name);
+                alert("Account Created! Now please Login.");
+                toggleAuth(false);
+            } else {
+                alert("Please fill all details.");
+            }
+        }
+
+        // Logic for Login
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            const sEmail = localStorage.getItem('storedEmail');
+            const sPass = localStorage.getItem('storedPass');
+
+            if(email === sEmail && pass === sPass) {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('mainDashboard').classList.remove('hidden');
+                localStorage.setItem('isLoggedIn', 'true');
+            } else {
+                alert("Invalid Credentials! Please Signup first.");
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        // Check login on Page Load
+        window.onload = function() {
+            if(localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('mainDashboard').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
