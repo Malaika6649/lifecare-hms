@@ -3,100 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeCare HMS | Final Project</title>
+    <title>LifeCare HMS | Final Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #10b981; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; min-height: 100vh; }
-        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
-        .premium-grad { background: linear-gradient(135deg, #0f172a, #1e293b); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; }
+        .glass-card { background: white; border-radius: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
-        .nav-link-active { background: white; color: #10b981; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .nav-active { background: #10b981; color: white; }
     </style>
 </head>
-<body class="text-slate-900">
+<body>
 
-    <div id="notification-container" class="fixed top-6 right-6 z-[300] flex flex-col gap-3"></div>
+    <div id="notification-container" class="fixed top-6 right-6 z-[500]"></div>
 
     <div id="authSection" class="flex items-center justify-center min-h-screen p-6">
-        <div class="w-full max-w-[400px] glass-card rounded-[3rem] p-10 text-center">
-            <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-xl font-black mx-auto mb-6">LC</div>
-            <div id="loginFields">
-                <h1 class="text-3xl font-extrabold mb-8">Sign In</h1>
-                <div class="space-y-4">
-                    <input type="email" id="loginEmail" placeholder="admin@test.com" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none border-0">
-                    <input type="password" id="loginPass" placeholder="123" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none border-0">
-                    <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all">Enter Dashboard</button>
-                    <button onclick="toggleAuth(true)" class="text-sm text-emerald-600 font-bold mt-4">Create Account</button>
-                </div>
-            </div>
-            <div id="signupFields" class="hidden">
-                <h1 class="text-3xl font-extrabold mb-8">Create Account</h1>
-                <div class="space-y-4">
-                    <input type="text" id="regName" placeholder="Full Name" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                    <input type="email" id="regEmail" placeholder="Email" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                    <input type="password" id="regPass" placeholder="Password" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                    <button onclick="handleSignup()" class="w-full bg-emerald-500 text-white font-bold py-4 rounded-2xl transition-all">Register</button>
-                    <button onclick="toggleAuth(false)" class="text-sm text-slate-500 font-bold mt-4 block mx-auto">Back to Login</button>
-                </div>
+        <div class="w-full max-w-[400px] glass-card p-10 text-center border border-white">
+            <h1 class="text-3xl font-extrabold mb-8 text-slate-900">Sign In</h1>
+            <div class="space-y-4">
+                <input type="email" id="loginEmail" placeholder="admin@test.com" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <input type="password" id="loginPass" placeholder="123" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all shadow-lg">Enter Dashboard</button>
             </div>
         </div>
     </div>
 
-    <div id="mainDashboard" class="hidden p-6 md:p-10 max-w-7xl mx-auto">
-        <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
-            <div>
-                <h2 class="text-4xl font-extrabold tracking-tight text-slate-900">LifeCare Cloud</h2>
-                <p class="text-slate-500 font-medium italic">Data Structures & Management System</p>
-            </div>
-            <nav class="bg-slate-200/50 p-1.5 rounded-3xl flex gap-1">
-                <button onclick="showSection('dashboard')" id="btn-dashboard" class="nav-btn px-6 py-3 rounded-2xl font-bold nav-link-active">📊 Patients</button>
-                <button onclick="showSection('staff')" id="btn-staff" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500">👨‍⚕️ Staff</button>
-                <button onclick="handleLogout()" class="px-6 py-3 rounded-2xl font-bold text-rose-500">🚪 Logout</button>
-            </nav>
+    <div id="mainDashboard" class="hidden p-6 md:p-10 max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">LifeCare Cloud</h2>
+            <button onclick="handleLogout()" class="bg-rose-50 text-rose-500 px-6 py-2 rounded-xl font-bold">Logout</button>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="md:col-span-2 premium-grad p-8 rounded-[2.5rem] text-white shadow-2xl">
-                <span id="tipLabel" class="text-[10px] font-black uppercase tracking-widest opacity-60">Health Tip</span>
-                <h3 id="healthyTip" class="text-2xl font-bold mt-4">Loading tip...</h3>
+        <div class="bg-slate-900 rounded-[2.5rem] p-8 mb-8 text-white flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <span id="tipLabel" class="text-[10px] font-black uppercase opacity-50 tracking-widest">Daily Advice</span>
+                <h3 id="healthyTip" class="text-xl font-bold mt-1 tracking-tight">Loading your tip...</h3>
             </div>
-            <div class="glass-card p-8 rounded-[2.5rem] flex flex-col justify-center text-center">
-                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Live Patients</p>
-                <h4 id="totalPatients" class="text-4xl font-black mt-2 text-emerald-500">0</h4>
+            <div class="bg-white/10 px-6 py-4 rounded-3xl text-center">
+                <p class="text-[10px] opacity-60 font-bold uppercase">Patients</p>
+                <h4 id="totalPatients" class="text-2xl font-black text-emerald-400">0</h4>
             </div>
         </div>
 
-        <main>
-            <div id="dashboardSection" class="section">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold">Patient Queue (FIFO)</h3>
-                    <button onclick="toggleModal('modal')" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold">+ New</button>
+                    <h3 class="font-bold text-xl">Staff Management</h3>
+                    <button onclick="toggleModal('staffModal')" class="text-emerald-500 font-bold text-sm">+ Add</button>
                 </div>
-                <div class="glass-card rounded-[2.5rem] overflow-hidden">
-                    <table class="w-full text-left">
-                        <tbody id="patientList"></tbody>
-                    </table>
-                </div>
+                <div id="staffList" class="space-y-3"></div>
             </div>
-            <div id="staffSection" class="section hidden">
+
+            <div class="glass-card p-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold">Staff Directory (<span id="countS">0</span>)</h3>
-                    <button onclick="toggleModal('staffModal')" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold">+ Staff</button>
+                    <h3 class="font-bold text-xl">Patient Queue</h3>
+                    <button onclick="toggleModal('patientModal')" class="text-emerald-500 font-bold text-sm">+ New</button>
                 </div>
-                <div id="staffList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                <div id="patientList" class="space-y-3"></div>
             </div>
-        </main>
+        </div>
     </div>
 
-    <div id="modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6"><div class="bg-white p-10 rounded-[3rem] w-full max-w-md"><h2 class="text-2xl font-black mb-6">Patient</h2><input id="name" placeholder="Name" class="w-full p-4 bg-slate-50 mb-4 rounded-xl outline-none"><input id="disease" placeholder="Disease" class="w-full p-4 bg-slate-50 mb-6 rounded-xl outline-none"><button onclick="savePatient()" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold">Save</button><button onclick="toggleModal('modal')" class="w-full mt-4 text-slate-400">Cancel</button></div></div>
-    <div id="staffModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6"><div class="bg-white p-10 rounded-[3rem] w-full max-w-md"><h2 class="text-2xl font-black mb-6">Staff</h2><input id="staffName" placeholder="Name" class="w-full p-4 bg-slate-50 mb-4 rounded-xl outline-none"><input id="staffRole" placeholder="Role" class="w-full p-4 bg-slate-50 mb-6 rounded-xl outline-none"><button onclick="saveStaff()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">Save</button><button onclick="toggleModal('staffModal')" class="w-full mt-4 text-slate-400">Cancel</button></div></div>
+    <div id="patientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-[100]">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-sm">
+            <h2 class="font-bold mb-4">New Patient</h2>
+            <input id="pName" placeholder="Name" class="w-full p-4 bg-slate-100 rounded-xl mb-3 outline-none">
+            <input id="pDisease" placeholder="Disease" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none">
+            <button onclick="saveData('patients')" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold">Add Patient</button>
+            <button onclick="toggleModal('patientModal')" class="w-full mt-2 text-slate-400">Close</button>
+        </div>
+    </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <div id="staffModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-[100]">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-sm">
+            <h2 class="font-bold mb-4">Add Staff</h2>
+            <input id="sName" placeholder="Name" class="w-full p-4 bg-slate-100 rounded-xl mb-3 outline-none">
+            <input id="sRole" placeholder="Role" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none">
+            <button onclick="saveData('staff')" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">Register Staff</button>
+            <button onclick="toggleModal('staffModal')" class="w-full mt-2 text-slate-400">Close</button>
+        </div>
+    </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyANCd9_8skLjVS_IaVgfbk24ZAlYeZpCR8",
             authDomain: "lifecare-hms-117d8.firebaseapp.com",
@@ -105,59 +97,96 @@
             messagingSenderId: "489995234025",
             appId: "1:489995234025:web:c5a7d23f71b71aa2e51e78"
         };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // --- AUTH LOGIC (WINDOW ATTACHED) ---
-        window.handleLogin = () => {
-            const e = document.getElementById('loginEmail').value;
-            const p = document.getElementById('loginPass').value;
-            if((e === "admin@test.com" && p === "123") || (e === localStorage.getItem('storedEmail') && p === localStorage.getItem('storedPass'))) {
-                localStorage.setItem('isLoggedIn', 'true');
+        // 1. LOGIN LOGIC
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            if (email === "admin@test.com" && pass === "123") {
+                localStorage.setItem('hms_login', 'true');
                 location.reload();
-            } else { alert("Login Failed!"); }
-        };
-
-        window.handleSignup = () => {
-            const e = document.getElementById('regEmail').value;
-            const p = document.getElementById('regPass').value;
-            if(e && p) {
-                localStorage.setItem('storedEmail', e);
-                localStorage.setItem('storedPass', p);
-                alert("Account Created!");
-                window.toggleAuth(false);
+            } else {
+                alert("Ghalat Email ya Password!");
             }
-        };
+        }
 
-        window.handleLogout = () => { localStorage.removeItem('isLoggedIn'); location.reload(); };
+        function handleLogout() {
+            localStorage.removeItem('hms_login');
+            location.reload();
+        }
 
-        // --- DATA SYNC ---
-        function startSync() {
-            onSnapshot(query(collection(db, "patients"), orderBy("time", "asc")), (snap) => {
+        // 2. TIPS LOGIC (3 Times a Day)
+        function setTips() {
+            const hr = new Date().getHours();
+            let tip = "", lbl = "";
+            if(hr < 12) { lbl = "Morning ☀️"; tip = "Drink water and eat a healthy breakfast!"; }
+            else if(hr < 17) { lbl = "Afternoon 🌤️"; tip = "Take a short walk and stay hydrated."; }
+            else { lbl = "Evening 🌙"; tip = "Have a light dinner and sleep well."; }
+            document.getElementById('healthyTip').innerText = tip;
+            document.getElementById('tipLabel').innerText = lbl;
+        }
+
+        // 3. DATA SYNC
+        function syncData() {
+            // Patients Queue
+            db.collection("patients").orderBy("time", "asc").onSnapshot(snap => {
                 const list = document.getElementById('patientList');
-                if(!list) return;
                 document.getElementById('totalPatients').innerText = snap.size;
                 list.innerHTML = "";
-                snap.forEach(d => {
-                    const p = d.data();
-                    list.innerHTML += `<tr class="border-b"><td class="p-8 font-bold">${p.name}</td><td class="p-8 text-emerald-600">${p.disease}</td><td class="p-8 text-right"><button onclick="deleteData('patients', '${d.id}')" class="text-rose-400 font-bold">Delete</button></td></tr>`;
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    list.innerHTML += `<div class="p-4 bg-slate-50 rounded-2xl flex justify-between">
+                        <span><b>${p.name}</b> (${p.disease})</span>
+                        <button onclick="deleteDoc('patients', '${doc.id}')" class="text-rose-400">✕</button>
+                    </div>`;
                 });
             });
 
-            onSnapshot(collection(db, "staff"), (snap) => {
+            // Staff List
+            db.collection("staff").onSnapshot(snap => {
                 const list = document.getElementById('staffList');
-                if(!list) return;
-                document.getElementById('countS').innerText = snap.size;
                 list.innerHTML = "";
-                snap.forEach(d => {
-                    const s = d.data();
-                    list.innerHTML += `<div class="glass-card p-6 rounded-3xl flex justify-between"><div><b>${s.name}</b><br><small>${s.role}</small></div><button onclick="deleteData('staff', '${d.id}')" class="text-rose-400">✕</button></div>`;
+                snap.forEach(doc => {
+                    const s = doc.data();
+                    list.innerHTML += `<div class="p-4 bg-emerald-50 rounded-2xl flex justify-between border border-emerald-100">
+                        <span><b>${s.name}</b> - ${s.role}</span>
+                        <button onclick="deleteDoc('staff', '${doc.id}')" class="text-rose-400">✕</button>
+                    </div>`;
                 });
             });
         }
 
-        // --- CRUD ACTIONS ---
-        window.savePatient = async () => {
-            const n = document.getElementById('name').value;
-            const d = document.getElementById
+        // 4. SAVE DATA
+        async function saveData(type) {
+            if(type === 'patients') {
+                const n = document.getElementById('pName').value;
+                const d = document.getElementById('pDisease').value;
+                if(n && d) {
+                    await db.collection("patients").add({ name: n, disease: d, time: new Date() });
+                    toggleModal('patientModal');
+                }
+            } else {
+                const n = document.getElementById('sName').value;
+                const r = document.getElementById('sRole').value;
+                if(n && r) {
+                    await db.collection("staff").add({ name: n, role: r });
+                    toggleModal('staffModal');
+                }
+            }
+        }
+
+        function deleteDoc(col, id) { if(confirm("Delete?")) db.collection(col).doc(id).delete(); }
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+        // STARTUP
+        if (localStorage.getItem('hms_login') === 'true') {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            setTips();
+            syncData();
+        }
+    </script>
+</body>
+</html>
