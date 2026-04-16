@@ -3,84 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeCare HMS | Final Fixed</title>
+    <title>LifeCare Cloud | Open Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; }
-        .glass-card { background: white; border-radius: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; }
+        .glass-card { background: white; border-radius: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
         .hidden { display: none !important; }
-        .nav-active { background: #10b981; color: white; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
 
-    <div id="notification-container" class="fixed top-6 right-6 z-[500]"></div>
-
-    <div id="authSection" class="flex items-center justify-center min-h-screen p-6">
-        <div class="w-full max-w-[400px] glass-card p-10 text-center border border-white">
-            <h1 class="text-3xl font-extrabold mb-8 text-slate-900">Sign In</h1>
-            <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="admin@test.com" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                <input type="password" id="loginPass" placeholder="123" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-                <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all shadow-lg">Enter Dashboard</button>
+    <div class="max-w-6xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight">LifeCare Cloud</h1>
+                <p class="text-slate-500 font-medium text-sm">Real-time Hospital Management</p>
             </div>
-        </div>
-    </div>
 
-    <div id="mainDashboard" class="hidden p-6 md:p-10 max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-10">
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight">LifeCare Cloud</h2>
-            <button onclick="handleLogout()" class="bg-rose-50 text-rose-500 px-6 py-2 rounded-xl font-bold">Logout</button>
+            <div id="authBox" class="glass-card p-6 flex flex-wrap items-center gap-3 bg-emerald-50 border-emerald-100">
+                <input type="email" id="loginEmail" placeholder="admin@test.com" class="px-4 py-2 rounded-xl border-0 text-sm outline-none w-40">
+                <input type="password" id="loginPass" placeholder="123" class="px-4 py-2 rounded-xl border-0 text-sm outline-none w-32">
+                <button onclick="handleLogin()" class="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all">Sign In</button>
+            </div>
+
+            <div id="userBox" class="hidden glass-card p-4 flex items-center gap-4 border-emerald-200">
+                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-xs">AD</div>
+                <div>
+                    <p class="text-xs font-black leading-none">Admin User</p>
+                    <button onclick="handleLogout()" class="text-[10px] text-rose-500 font-bold uppercase tracking-tighter hover:underline">Sign Out</button>
+                </div>
+            </div>
         </header>
 
-        <div class="bg-slate-900 rounded-[2.5rem] p-8 mb-8 text-white flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <span id="tipLabel" class="text-[10px] font-black uppercase opacity-50 tracking-widest">Daily Advice</span>
-                <h3 id="healthyTip" class="text-xl font-bold mt-1 tracking-tight">Loading your tip...</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="md:col-span-2 bg-slate-900 rounded-[2.5rem] p-8 text-white flex flex-col justify-center min-h-[160px]">
+                <span id="tipLabel" class="text-[10px] font-bold uppercase opacity-50 tracking-widest mb-2">System Advice</span>
+                <h3 id="healthyTip" class="text-xl md:text-2xl font-bold leading-tight">Please sign in to access full system controls.</h3>
             </div>
-            <div class="bg-white/10 px-6 py-4 rounded-3xl text-center">
-                <p class="text-[10px] opacity-60 font-bold uppercase">Patients</p>
-                <h4 id="totalPatients" class="text-2xl font-black text-emerald-400">0</h4>
+            <div class="glass-card p-8 flex flex-col items-center justify-center text-center">
+                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Live Queue</p>
+                <h4 id="totalPatients" class="text-5xl font-black text-emerald-500 mt-2">0</h4>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="glass-card p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-xl">Staff Management</h3>
-                    <button onclick="toggleModal('staffModal')" class="text-emerald-500 font-bold text-sm">+ Add</button>
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="font-bold text-xl tracking-tight">Patient Queue (FIFO)</h3>
+                    <button id="addPatientBtn" onclick="checkAuthAndOpen('patientModal')" class="bg-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg shadow-emerald-200">+ New Patient</button>
                 </div>
-                <div id="staffList" class="space-y-3"></div>
+                <div id="patientList" class="space-y-4">
+                    <p class="text-slate-400 text-sm italic">Syncing with cloud...</p>
+                </div>
             </div>
 
             <div class="glass-card p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-xl">Patient Queue</h3>
-                    <button onclick="toggleModal('patientModal')" class="text-emerald-500 font-bold text-sm">+ New</button>
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="font-bold text-xl tracking-tight">Medical Staff</h3>
+                    <button id="addStaffBtn" onclick="checkAuthAndOpen('staffModal')" class="bg-slate-900 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg shadow-slate-200">+ Register Staff</button>
                 </div>
-                <div id="patientList" class="space-y-3"></div>
+                <div id="staffList" class="space-y-4">
+                    <p class="text-slate-400 text-sm italic">Loading directory...</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="patientModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-[100]">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-sm">
-            <h2 class="font-bold mb-4">New Patient</h2>
-            <input id="pName" placeholder="Name" class="w-full p-4 bg-slate-100 rounded-xl mb-3 outline-none">
-            <input id="pDisease" placeholder="Disease" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none">
-            <button onclick="saveData('patients')" class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold">Add Patient</button>
-            <button onclick="toggleModal('patientModal')" class="w-full mt-2 text-slate-400">Close</button>
+    <div id="patientModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6 z-[100]">
+        <div class="bg-white p-10 rounded-[3rem] w-full max-w-sm shadow-2xl">
+            <h2 class="text-2xl font-black mb-6">Patient Entry</h2>
+            <input id="pName" placeholder="Full Name" class="w-full p-4 bg-slate-50 rounded-2xl mb-3 outline-none border border-slate-100 focus:border-emerald-400">
+            <input id="pDisease" placeholder="Diagnosis" class="w-full p-4 bg-slate-50 rounded-2xl mb-6 outline-none border border-slate-100 focus:border-emerald-400">
+            <button onclick="saveData('patients')" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold shadow-xl">Add to Queue</button>
+            <button onclick="toggleModal('patientModal')" class="w-full mt-4 text-slate-400 font-bold text-sm">Cancel</button>
         </div>
     </div>
 
-    <div id="staffModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-[100]">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-sm">
-            <h2 class="font-bold mb-4">Add Staff</h2>
-            <input id="sName" placeholder="Name" class="w-full p-4 bg-slate-100 rounded-xl mb-3 outline-none">
-            <input id="sRole" placeholder="Role" class="w-full p-4 bg-slate-100 rounded-xl mb-4 outline-none">
-            <button onclick="saveData('staff')" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">Register Staff</button>
-            <button onclick="toggleModal('staffModal')" class="w-full mt-2 text-slate-400">Close</button>
+    <div id="staffModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6 z-[100]">
+        <div class="bg-white p-10 rounded-[3rem] w-full max-w-sm shadow-2xl">
+            <h2 class="text-2xl font-black mb-6">Staff Registration</h2>
+            <input id="sName" placeholder="Staff Name" class="w-full p-4 bg-slate-50 rounded-2xl mb-3 outline-none border border-slate-100 focus:border-emerald-400">
+            <input id="sRole" placeholder="Role (e.g., Surgeon)" class="w-full p-4 bg-slate-50 rounded-2xl mb-6 outline-none border border-slate-100 focus:border-emerald-400">
+            <button onclick="saveData('staff')" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-xl">Register Staff</button>
+            <button onclick="toggleModal('staffModal')" class="w-full mt-4 text-slate-400 font-bold text-sm">Cancel</button>
         </div>
     </div>
 
@@ -88,7 +94,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
-        // Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyANCd9_8skLjVS_IaVgfbk24ZAlYeZpCR8",
             authDomain: "lifecare-hms-117d8.firebaseapp.com",
@@ -100,65 +105,87 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 1. LOGIN LOGIC
+        // AUTH FUNCTIONS
         function handleLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            if (email === "admin@test.com" && pass === "123") {
-                localStorage.setItem('hms_login', 'true');
-                location.reload();
+            const e = document.getElementById('loginEmail').value;
+            const p = document.getElementById('loginPass').value;
+            if(e === "admin@test.com" && p === "123") {
+                localStorage.setItem('hms_auth', 'true');
+                showLoggedInUI();
             } else {
-                alert("Ghalat Email ya Password!");
+                alert("Incorrect Credentials!");
             }
         }
 
         function handleLogout() {
-            localStorage.removeItem('hms_login');
+            localStorage.removeItem('hms_auth');
             location.reload();
         }
 
-        // 2. TIPS LOGIC (3 Times a Day)
+        function showLoggedInUI() {
+            document.getElementById('authBox').classList.add('hidden');
+            document.getElementById('userBox').classList.remove('hidden');
+            setTips();
+        }
+
+        function checkAuthAndOpen(modalId) {
+            if(localStorage.getItem('hms_auth') === 'true') {
+                toggleModal(modalId);
+            } else {
+                alert("Please Sign In first to modify data!");
+            }
+        }
+
+        // TIPS
         function setTips() {
             const hr = new Date().getHours();
-            let tip = "", lbl = "";
-            if(hr < 12) { lbl = "Morning ☀️"; tip = "Drink water and eat a healthy breakfast!"; }
-            else if(hr < 17) { lbl = "Afternoon 🌤️"; tip = "Take a short walk and stay hydrated."; }
-            else { lbl = "Evening 🌙"; tip = "Have a light dinner and sleep well."; }
-            document.getElementById('healthyTip').innerText = tip;
+            let msg = "", lbl = "";
+            if(hr < 12) { lbl = "Morning Advice"; msg = "Morning shift: Ensure all patient files are updated."; }
+            else if(hr < 17) { lbl = "Afternoon Advice"; msg = "Mid-day check: Monitor the queue for priority cases."; }
+            else { lbl = "Evening Advice"; msg = "Evening shift: Handover protocols must be followed."; }
+            document.getElementById('healthyTip').innerText = msg;
             document.getElementById('tipLabel').innerText = lbl;
         }
 
-        // 3. DATA SYNC
-        function syncData() {
-            // Patients Queue
+        // DATA SYNC (Always visible)
+        function startSync() {
             db.collection("patients").orderBy("time", "asc").onSnapshot(snap => {
                 const list = document.getElementById('patientList');
                 document.getElementById('totalPatients').innerText = snap.size;
                 list.innerHTML = "";
                 snap.forEach(doc => {
                     const p = doc.data();
-                    list.innerHTML += `<div class="p-4 bg-slate-50 rounded-2xl flex justify-between">
-                        <span><b>${p.name}</b> (${p.disease})</span>
-                        <button onclick="deleteDoc('patients', '${doc.id}')" class="text-rose-400">✕</button>
-                    </div>`;
+                    const isAuth = localStorage.getItem('hms_auth') === 'true';
+                    list.innerHTML += `
+                        <div class="flex justify-between items-center p-5 bg-slate-50 rounded-2xl border border-slate-100 group">
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">${p.name}</p>
+                                <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest mt-1">${p.disease}</p>
+                            </div>
+                            ${isAuth ? `<button onclick="deleteDoc('patients', '${doc.id}')" class="text-rose-400 opacity-0 group-hover:opacity-100 transition-all font-bold">✕</button>` : ''}
+                        </div>`;
                 });
             });
 
-            // Staff List
             db.collection("staff").onSnapshot(snap => {
                 const list = document.getElementById('staffList');
                 list.innerHTML = "";
                 snap.forEach(doc => {
                     const s = doc.data();
-                    list.innerHTML += `<div class="p-4 bg-emerald-50 rounded-2xl flex justify-between border border-emerald-100">
-                        <span><b>${s.name}</b> - ${s.role}</span>
-                        <button onclick="deleteDoc('staff', '${doc.id}')" class="text-rose-400">✕</button>
-                    </div>`;
+                    const isAuth = localStorage.getItem('hms_auth') === 'true';
+                    list.innerHTML += `
+                        <div class="flex justify-between items-center p-5 bg-emerald-50 rounded-2xl border border-emerald-100 group">
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">${s.name}</p>
+                                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">${s.role}</p>
+                            </div>
+                            ${isAuth ? `<button onclick="deleteDoc('staff', '${doc.id}')" class="text-rose-400 opacity-0 group-hover:opacity-100 transition-all font-bold">✕</button>` : ''}
+                        </div>`;
                 });
             });
         }
 
-        // 4. SAVE DATA
+        // CRUD
         async function saveData(type) {
             if(type === 'patients') {
                 const n = document.getElementById('pName').value;
@@ -177,15 +204,13 @@
             }
         }
 
-        function deleteDoc(col, id) { if(confirm("Delete?")) db.collection(col).doc(id).delete(); }
+        function deleteDoc(col, id) { if(confirm("Confirm removal?")) db.collection(col).doc(id).delete(); }
         function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
 
-        // STARTUP
-        if (localStorage.getItem('hms_login') === 'true') {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-            setTips();
-            syncData();
+        // Start Up
+        startSync();
+        if(localStorage.getItem('hms_auth') === 'true') {
+            showLoggedInUI();
         }
     </script>
 </body>
