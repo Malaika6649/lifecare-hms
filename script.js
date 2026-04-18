@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyANCd9_8skLjVS_IaVgfbk24ZAlYeZpCR8",
     authDomain: "lifecare-hms-117d8.firebaseapp.com",
@@ -13,170 +14,122 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- 1. HEALTHY TIPS FUNCTION ---
-function updateTips() {
+// --- 1. Real-time Greetings & Clock ---
+function setupHeader() {
     const hr = new Date().getHours();
-    let msg = "", lbl = "";
-    if(hr >= 5 && hr < 12) { lbl = "Morning ☀️"; msg = "Start your day with a glass of water and light exercise!"; }
-    else if(hr >= 12 && hr < 17) { lbl = "Afternoon 🌤️"; msg = "Stay hydrated and take a 5-minute stretch break."; }
-    else { lbl = "Evening 🌙"; msg = "Eat a light dinner and aim for 8 hours of sleep."; }
-    
-    if(document.getElementById('healthyTip')) {
-        document.getElementById('healthyTip').innerText = msg;
-        if(document.getElementById('tipLabel')) document.getElementById('tipLabel').innerText = lbl;
-    }
+    const greet = document.getElementById('greetingText');
+    if (hr < 12) greet.innerText = "Good Morning, Gentleman & Beautiful People";
+    else if (hr < 18) greet.innerText = "Good Afternoon, Professionals";
+    else greet.innerText = "Good Evening, Sir/Madam";
+
+    setInterval(() => {
+        document.getElementById('liveClock').innerText = new Date().toLocaleTimeString() + " | " + new Date().toDateString();
+    }, 1000);
 }
 
-// --- 2. LOGIN & AUTH (Admin vs User) ---
-window.handleLogin = () => {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPass').value.trim();
+// --- 2. Dynamic Health Tips ---
+const tips = [
+    "Drink 8 glasses of water today for kidney health.",
+    "A 15-minute walk can boost your heart health significantly.",
+    "Avoid sugar in your green tea to manage portion control.",
+    "Healthy breakfast with eggs gives you long-lasting energy.",
+    "Early to bed and early to rise makes you healthy and wise."
+];
+document.getElementById('healthTip').innerText = tips[Math.floor(Math.random() * tips.length)];
 
-    if (email === "admin@test.com" && pass === "123") {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userRole', 'admin');
-        alert("Success! Unlocking Admin Dashboard...");
-        location.reload();
-    } else if (email !== "" && pass !== "") {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userRole', 'user');
-        alert("Welcome to LifeCare Patient Portal!");
-        location.reload();
-    } else {
-        alert("Please enter valid credentials.");
-    }
-};
-
-window.handleLogout = () => {
-    localStorage.clear();
-    location.reload();
-};
-
-// --- 3. REAL-TIME DATA SYNC (All Modules) ---
-function startSync() {
-    const role = localStorage.getItem('userRole');
-
-    // A. Patient Queue
-    onSnapshot(query(collection(db, "patients"), orderBy("time", "asc")), (snap) => {
-        const list = document.getElementById('patientList');
-        const countP = document.getElementById('countP');
-        if(countP) countP.innerText = snap.size;
-        if(list) {
-            list.innerHTML = "";
-            snap.forEach(d => {
-                const p = d.data();
-                const delBtn = (role === 'admin') ? `<button onclick="window.deleteItem('patients', '${d.id}')" class="text-rose-400 font-bold ml-4">Delete</button>` : '';
-                list.innerHTML += `<tr class="border-b hover:bg-slate-50 transition-all">
-                    <td class="p-8 font-bold">${p.name}</td>
-                    <td class="p-8"><span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase">${p.disease}</span></td>
-                    <td class="p-8 text-right">${delBtn}</td>
-                </tr>`;
-            });
-        }
-    });
-
-    // B. Staff List
-    onSnapshot(collection(db, "staff"), (snap) => {
-        const staffList = document.getElementById('staffList');
-        const countS = document.getElementById('countS');
-        if(countS) countS.innerText = snap.size;
-        if(staffList) {
-            staffList.innerHTML = "";
-            snap.forEach(d => {
-                const s = d.data();
-                const delBtn = (role === 'admin') ? `<button onclick="window.deleteItem('staff', '${d.id}')" class="text-rose-400 ml-2">✕</button>` : '';
-                staffList.innerHTML += `<div class="glass-card p-8 rounded-[3rem] flex justify-between items-center group">
-                    <div><h4 class="font-bold text-lg">${s.name}</h4><p class="text-emerald-500 text-[10px] font-black uppercase mt-1 tracking-widest">${s.role}</p></div>
-                    ${delBtn}
-                </div>`;
-            });
-        }
-    });
-
-    // C. Billing Sync
-    onSnapshot(query(collection(db, "bills"), orderBy("createdAt", "desc")), (snap) => {
-        const billHistory = document.getElementById('billHistory');
-        if(billHistory) {
-            billHistory.innerHTML = "";
-            snap.forEach(d => {
-                const b = d.data();
-                billHistory.innerHTML += `<div class="flex justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div><p class="font-bold">${b.name}</p><p class="text-xs text-slate-400">${b.date}</p></div>
-                    <p class="font-black text-emerald-600">Rs. ${b.amount}</p>
-                </div>`;
-            });
-        }
+// --- 3. Online Pharmacy (100+ Medicines Logic) ---
+const medicines = [];
+const medNames = ["Panadol", "Augmentin", "Arinac", "Brufen", "Disprin", "Caldoc", "Surbex-Z", "Flagyl", "Entamizole", "Risek"];
+// Auto-generate 100 meds for demo
+for(let i=1; i<=100; i++) {
+    medicines.push({
+        id: i,
+        name: medNames[i % medNames.length] + " " + (i*10) + "mg",
+        price: Math.floor(Math.random() * 500) + 50
     });
 }
 
-// --- 4. NEW ACTIONS (Add/Delete/Purchase) ---
+function loadPharmacy() {
+    const grid = document.getElementById('medicineGrid');
+    grid.innerHTML = medicines.map(m => `
+        <div class="card p-5 text-center hover:border-blue-500 cursor-pointer transition-all group">
+            <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                <i class="fas fa-capsules"></i>
+            </div>
+            <h4 class="font-bold text-sm">${m.name}</h4>
+            <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-widest">Rs. ${m.price}</p>
+            <button onclick="addToCart('${m.name}', ${m.price})" class="mt-4 text-[10px] bg-slate-100 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500 hover:text-white">Add to Bill</button>
+        </div>
+    `).join('');
+}
 
-// Save Patient Record
+// --- 4. Firebase Sync (Patients) ---
+function syncData() {
+    onSnapshot(query(collection(db, "patients"), orderBy("time", "desc")), (snap) => {
+        const tbody = document.getElementById('patientTableBody');
+        document.getElementById('countP').innerText = snap.size;
+        
+        if (snap.empty) {
+            tbody.innerHTML = `<tr><td colspan="3" class="p-10 text-center text-slate-400 font-bold">NO Patient Today ☕</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = snap.docs.map(doc => {
+            const p = doc.data();
+            return `
+                <tr class="hover:bg-slate-50/50 border-b border-slate-50 last:border-none">
+                    <td class="p-5 font-bold text-slate-700">${p.name}</td>
+                    <td class="p-5"><span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase">${p.disease}</span></td>
+                    <td class="p-5 text-right">
+                        <button onclick="deletePatient('${doc.id}')" class="text-rose-300 hover:text-rose-500"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    });
+}
+
+// --- 5. Global Functions (Delete, Save, Modal) ---
+window.deletePatient = (id) => {
+    Swal.fire({
+        title: 'Delete Record?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#2563eb',
+        cancelButtonColor: '#f43f5e',
+        confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            await deleteDoc(doc(db, "patients", id));
+            Swal.fire('Deleted!', 'Record has been removed.', 'success');
+        }
+    });
+};
+
 window.savePatient = async () => {
-    const n = document.getElementById('name').value, d = document.getElementById('disease').value;
+    const n = document.getElementById('pName').value;
+    const d = document.getElementById('pDisease').value;
     if(n && d) {
         await addDoc(collection(db, "patients"), { name: n, disease: d, time: new Date() });
-        document.getElementById('modal').classList.add('hidden');
-        showNotification("Patient Record Added!");
+        closeModal('patientModal');
+        Swal.fire('Success', 'Patient Registered', 'success');
+        document.getElementById('pName').value = ""; document.getElementById('pDisease').value = "";
     }
 };
 
-// Generate Bill
-window.addBill = async () => {
-    const n = document.getElementById('billName').value, a = document.getElementById('billAmt').value;
-    if(n && a) {
-        await addDoc(collection(db, "bills"), {
-            name: n, 
-            amount: a, 
-            date: new Date().toLocaleTimeString(),
-            createdAt: new Date()
-        });
-        document.getElementById('billName').value = "";
-        document.getElementById('billAmt').value = "";
-        showNotification("Invoice Generated!");
-    }
+window.showPage = (id) => {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+    document.getElementById('page-' + id).classList.remove('hidden');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-' + id).classList.add('active');
 };
 
-// Global Delete Function
-window.deleteItem = async (col, id) => {
-    if(confirm("Are you sure you want to delete this?")) {
-        await deleteDoc(doc(db, col, id));
-        showNotification("Item Removed.");
-    }
-};
+window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
+window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('active');
 
-// Pharmacy Purchase Notification
-window.buyMed = (med, price) => {
-    showNotification(`Success: ${med} purchased for Rs. ${price}`);
-};
-
-function showNotification(m) {
-    const container = document.getElementById('notification-container');
-    if(!container) return;
-    const n = document.createElement('div');
-    n.className = "bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl font-bold animate-bounce";
-    n.innerText = m;
-    container.appendChild(n);
-    setTimeout(() => n.remove(), 3000);
-}
-
-// --- 5. INITIALIZATION ---
-function init() {
-    if(localStorage.getItem('isLoggedIn') === 'true') {
-        if(document.getElementById('authSection')) document.getElementById('authSection').classList.add('hidden');
-        if(document.getElementById('mainDashboard')) document.getElementById('mainDashboard').classList.remove('hidden');
-        
-        // Admin permissions check
-        const role = localStorage.getItem('userRole');
-        if(role !== 'admin') {
-            document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-            const title = document.getElementById('roleTitle');
-            if(title) title.innerText = "Patient View Portal";
-        }
-
-        updateTips();
-        startSync();
-    }
-}
-
-init();
+// --- Start ---
+setupHeader();
+syncData();
+loadPharmacy();
