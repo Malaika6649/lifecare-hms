@@ -1,135 +1,89 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyANCd9_8skLjVS_IaVgfbk24ZAlYeZpCR8",
-    authDomain: "lifecare-hms-117d8.firebaseapp.com",
-    projectId: "lifecare-hms-117d8",
-    storageBucket: "lifecare-hms-117d8.firebasestorage.app",
-    messagingSenderId: "489995234025",
-    appId: "1:489995234025:web:c5a7d23f71b71aa2e51e78"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// --- 1. Real-time Greetings & Clock ---
-function setupHeader() {
-    const hr = new Date().getHours();
-    const greet = document.getElementById('greetingText');
-    if (hr < 12) greet.innerText = "Good Morning, Gentleman & Beautiful People";
-    else if (hr < 18) greet.innerText = "Good Afternoon, Professionals";
-    else greet.innerText = "Good Evening, Sir/Madam";
-
-    setInterval(() => {
-        document.getElementById('liveClock').innerText = new Date().toLocaleTimeString() + " | " + new Date().toDateString();
-    }, 1000);
-}
-
-// --- 2. Dynamic Health Tips ---
-const tips = [
-    "Drink 8 glasses of water today for kidney health.",
-    "A 15-minute walk can boost your heart health significantly.",
-    "Avoid sugar in your green tea to manage portion control.",
-    "Healthy breakfast with eggs gives you long-lasting energy.",
-    "Early to bed and early to rise makes you healthy and wise."
+// --- 10 Professional Doctors Data ---
+const doctorsData = [
+    { name: "Dr. Ahmed Khan", role: "Senior Cardiologist", status: "Available", time: "09:00 AM - 02:00 PM", days: "Mon - Fri" },
+    { name: "Dr. Sara Malik", role: "Pediatrician", status: "Busy", time: "11:00 AM - 05:00 PM", days: "Mon - Sat" },
+    { name: "Dr. Zohaib Hassan", role: "Orthopedic Surgeon", status: "On Leave", time: "04:00 PM - 09:00 PM", days: "Tue - Sun" },
+    { name: "Dr. Fatima Ali", role: "Gynecologist", status: "Available", time: "10:00 AM - 03:00 PM", days: "Mon - Fri" },
+    { name: "Dr. Usman Sheikh", role: "Dermatologist", status: "Busy", time: "02:00 PM - 06:00 PM", days: "Wed - Sat" },
+    { name: "Dr. Maria Khan", role: "Neurologist", status: "Available", time: "08:00 AM - 12:00 PM", days: "Mon - Thu" },
+    { name: "Dr. Bilal Akram", role: "General Surgeon", status: "Available", time: "12:00 PM - 08:00 PM", days: "Daily" },
+    { name: "Dr. Hina Javed", role: "Psychiatrist", status: "Available", time: "05:00 PM - 10:00 PM", days: "Fri - Sun" },
+    { name: "Dr. Rizwan Shah", role: "ENT Specialist", status: "On Leave", time: "09:00 AM - 01:00 PM", days: "Mon - Wed" },
+    { name: "Dr. Zainab Noor", role: "Ophthalmologist", status: "Available", time: "03:00 PM - 07:00 PM", days: "Tue - Sat" }
 ];
-document.getElementById('healthTip').innerText = tips[Math.floor(Math.random() * tips.length)];
 
-// --- 3. Online Pharmacy (100+ Medicines Logic) ---
-const medicines = [];
-const medNames = ["Panadol", "Augmentin", "Arinac", "Brufen", "Disprin", "Caldoc", "Surbex-Z", "Flagyl", "Entamizole", "Risek"];
-// Auto-generate 100 meds for demo
-for(let i=1; i<=100; i++) {
-    medicines.push({
-        id: i,
-        name: medNames[i % medNames.length] + " " + (i*10) + "mg",
-        price: Math.floor(Math.random() * 500) + 50
-    });
-}
+function loadStaff() {
+    const grid = document.getElementById('doctorGrid');
+    if(!grid) return;
 
-function loadPharmacy() {
-    const grid = document.getElementById('medicineGrid');
-    grid.innerHTML = medicines.map(m => `
-        <div class="card p-5 text-center hover:border-blue-500 cursor-pointer transition-all group">
-            <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                <i class="fas fa-capsules"></i>
-            </div>
-            <h4 class="font-bold text-sm">${m.name}</h4>
-            <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-widest">Rs. ${m.price}</p>
-            <button onclick="addToCart('${m.name}', ${m.price})" class="mt-4 text-[10px] bg-slate-100 px-4 py-2 rounded-lg font-bold hover:bg-emerald-500 hover:text-white">Add to Bill</button>
-        </div>
-    `).join('');
-}
-
-// --- 4. Firebase Sync (Patients) ---
-function syncData() {
-    onSnapshot(query(collection(db, "patients"), orderBy("time", "desc")), (snap) => {
-        const tbody = document.getElementById('patientTableBody');
-        document.getElementById('countP').innerText = snap.size;
+    grid.innerHTML = doctorsData.map(d => {
+        // Status Colors
+        let statusBg = "bg-emerald-50 text-emerald-600"; // Available
+        let dotColor = "bg-emerald-500";
         
-        if (snap.empty) {
-            tbody.innerHTML = `<tr><td colspan="3" class="p-10 text-center text-slate-400 font-bold">NO Patient Today ☕</td></tr>`;
-            return;
+        if(d.status === "Busy") {
+            statusBg = "bg-amber-50 text-amber-600";
+            dotColor = "bg-amber-500";
+        } else if(d.status === "On Leave") {
+            statusBg = "bg-rose-50 text-rose-600";
+            dotColor = "bg-rose-500";
         }
 
-        tbody.innerHTML = snap.docs.map(doc => {
-            const p = doc.data();
-            return `
-                <tr class="hover:bg-slate-50/50 border-b border-slate-50 last:border-none">
-                    <td class="p-5 font-bold text-slate-700">${p.name}</td>
-                    <td class="p-5"><span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase">${p.disease}</span></td>
-                    <td class="p-5 text-right">
-                        <button onclick="deletePatient('${doc.id}')" class="text-rose-300 hover:text-rose-500"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    });
+        return `
+            <div class="card p-6 border-t-4 ${d.status === 'Available' ? 'border-t-emerald-400' : 'border-t-slate-200'}">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-xl shadow-sm">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <span class="flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusBg}">
+                        <span class="w-2 h-2 rounded-full ${dotColor} animate-pulse"></span>
+                        ${d.status}
+                    </span>
+                </div>
+                
+                <h3 class="font-bold text-slate-800 text-lg mb-1">${d.name}</h3>
+                <p class="text-blue-600 text-xs font-bold uppercase tracking-tighter mb-4">${d.role}</p>
+                
+                <div class="space-y-3 pt-4 border-t border-slate-50">
+                    <div class="flex items-center gap-3 text-slate-500 text-xs font-medium">
+                        <i class="fas fa-clock text-blue-300"></i>
+                        <span>${d.time}</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-slate-500 text-xs font-medium">
+                        <i class="fas fa-calendar-alt text-blue-300"></i>
+                        <span>${d.days}</span>
+                    </div>
+                </div>
+                
+                <button onclick="bookApp('${d.name}')" 
+                    class="w-full mt-6 py-3 rounded-xl bg-slate-50 text-slate-600 text-xs font-bold hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-100 transition-all duration-300">
+                    Book Appointment
+                </button>
+            </div>
+        `;
+    }).join('');
 }
 
-// --- 5. Global Functions (Delete, Save, Modal) ---
-window.deletePatient = (id) => {
+// Global function for the Alert
+window.bookApp = (name) => {
     Swal.fire({
-        title: 'Delete Record?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
+        title: 'Confirm Appointment?',
+        text: `Do you want to book an appointment with ${name}?`,
+        icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#2563eb',
-        cancelButtonColor: '#f43f5e',
-        confirmButtonText: 'Yes, delete it!'
-    }).then(async (result) => {
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Yes, Book it!'
+    }).then((result) => {
         if (result.isConfirmed) {
-            await deleteDoc(doc(db, "patients", id));
-            Swal.fire('Deleted!', 'Record has been removed.', 'success');
+            Swal.fire(
+                'Requested!',
+                'Your request has been sent to the doctor.',
+                'success'
+            )
         }
     });
 };
 
-window.savePatient = async () => {
-    const n = document.getElementById('pName').value;
-    const d = document.getElementById('pDisease').value;
-    if(n && d) {
-        await addDoc(collection(db, "patients"), { name: n, disease: d, time: new Date() });
-        closeModal('patientModal');
-        Swal.fire('Success', 'Patient Registered', 'success');
-        document.getElementById('pName').value = ""; document.getElementById('pDisease').value = "";
-    }
-};
-
-window.showPage = (id) => {
-    document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
-    document.getElementById('page-' + id).classList.remove('hidden');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('btn-' + id).classList.add('active');
-};
-
-window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
-window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
-window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('active');
-
-// --- Start ---
-setupHeader();
-syncData();
-loadPharmacy();
+// Start initialization
+loadStaff();
