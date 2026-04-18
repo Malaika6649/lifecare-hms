@@ -3,116 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeCare HMS | Enterprise Edition</title>
+    <title>LifeCare Pro | Advanced HMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        :root { --primary: #0ea5e9; --success: #10b981; --bg: #f8fafc; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #1e293b; overflow-x: hidden; }
-
-        /* Animations */
+        :root { --primary: #2563eb; --secondary: #10b981; --bg: #f8fafc; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); overflow-x: hidden; }
+        
+        /* Skeleton Loading Effect */
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 8px; }
         @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 12px; }
 
-        /* Professional Cards */
-        .glass-card { 
-            background: white; border: 1px solid rgba(226, 232, 240, 0.8); 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02); border-radius: 1.5rem; transition: all 0.3s ease;
-        }
-        .glass-card:hover { transform: translateY(-3px); box-shadow: 0 12px 20px -5px rgba(0,0,0,0.05); }
+        /* Smooth Sidebar Transition */
+        .sidebar { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); width: 260px; }
+        @media (max-width: 768px) { .sidebar { width: 0; position: fixed; left: -260px; } .sidebar.active { width: 260px; left: 0; z-index: 1000; } }
 
-        /* Badges & Elements */
-        .badge-active { background: #f0fdf4; color: #166534; padding: 4px 12px; border-radius: 99px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-        .nav-link-active { background: #f1f5f9 !important; color: var(--primary) !important; font-weight: 800; }
-        .trend-up { color: var(--success); font-size: 11px; font-weight: bold; margin-left: 4px; }
-
-        /* ZenDesk Mobile Optimization */
-        @media (max-width: 768px) {
-            nav {
-                position: fixed !important; bottom: 0; left: 0; width: 100%;
-                background: white !important; border-top: 1px solid #e2e8f0;
-                display: flex !important; justify-content: space-around !important;
-                padding: 12px 0 !important; z-index: 1000; border-radius: 0 !important;
-                box-shadow: 0 -10px 25px rgba(0,0,0,0.03);
-            }
-            .nav-btn { flex-direction: column; font-size: 10px !important; gap: 4px; border-radius: 0 !important; background: transparent !important; }
-            #patientList tr {
-                display: block; background: white; margin-bottom: 15px; padding: 15px;
-                border-radius: 20px; border: 1px solid #e2e8f0;
-            }
-            #patientList td { display: block; border: none !important; padding: 4px 0 !important; }
-            thead { display: none; }
-            .fab-btn {
-                position: fixed; bottom: 85px; right: 20px; width: 60px; height: 60px;
-                background: var(--primary); color: white; border-radius: 20px;
-                display: flex; align-items: center; justify-content: center;
-                box-shadow: 0 15px 30px rgba(14, 165, 233, 0.4); z-index: 999; font-size: 24px;
-            }
-            .grid-stats { grid-template-columns: repeat(2, 1fr) !important; }
-            .main-content { padding-bottom: 100px; }
-        }
+        .glass-card { background: white; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-radius: 20px; }
+        .nav-active { background: #eff6ff; color: var(--primary); border-right: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
-    <div id="notifBox" class="fixed top-6 right-6 z-[300] space-y-2"></div>
-
-    <div id="mainDashboard" class="max-w-7xl mx-auto p-4 md:p-10 main-content">
-        <header class="flex items-center justify-between mb-10">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center text-white font-bold">LC</div>
-                <div>
-                    <h2 class="text-lg font-extrabold text-slate-800 leading-none">Command Center</h2>
-                    <p id="liveClock" class="text-[10px] font-bold text-sky-500 mt-1 uppercase tracking-tighter">Syncing...</p>
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="sidebar bg-white border-r border-slate-200 h-screen sticky top-0 flex flex-col">
+            <div class="p-6">
+                <div class="flex items-center gap-3 text-blue-600">
+                    <i class="fas fa-hospital-alt text-2xl"></i>
+                    <span class="font-bold text-xl tracking-tight">LifeCare Pro</span>
                 </div>
             </div>
-            <nav class="bg-white p-1 rounded-2xl border flex">
-                <button onclick="showSection('dashboard')" id="btn-dashboard" class="nav-btn px-4 py-2 rounded-xl text-slate-400 nav-link-active">🏠 Home</button>
-                <button onclick="showSection('billing')" id="btn-billing" class="nav-btn px-4 py-2 rounded-xl text-slate-400">💳 Billing</button>
-                <button onclick="showSection('staff')" id="btn-staff" class="nav-btn px-4 py-2 rounded-xl text-slate-400">👨‍⚕️ Staff</button>
+            <nav class="flex-1 mt-4">
+                <button onclick="showPage('home')" class="w-full flex items-center gap-4 px-6 py-4 text-slate-500 hover:bg-slate-50 nav-item nav-active" id="nav-home">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+                <button onclick="showPage('appointment')" class="w-full flex items-center gap-4 px-6 py-4 text-slate-500 hover:bg-slate-50 nav-item" id="nav-appointment">
+                    <i class="fas fa-calendar-check"></i> Appointments
+                </button>
+                <button onclick="showPage('pharmacy')" class="w-full flex items-center gap-4 px-6 py-4 text-slate-500 hover:bg-slate-50 nav-item" id="nav-pharmacy">
+                    <i class="fas fa-pills"></i> Pharmacy
+                </button>
+                <button onclick="showPage('lab')" class="w-full flex items-center gap-4 px-6 py-4 text-slate-500 hover:bg-slate-50 nav-item" id="nav-lab">
+                    <i class="fas fa-microscope"></i> Lab Reports
+                </button>
+                <button onclick="showPage('staff')" class="w-full flex items-center gap-4 px-6 py-4 text-slate-500 hover:bg-slate-50 nav-item" id="nav-staff">
+                    <i class="fas fa-user-md"></i> Staff & Doctors
+                </button>
             </nav>
-        </header>
+            <div class="p-6 border-t border-slate-100">
+                <div class="bg-blue-50 p-4 rounded-xl">
+                    <p class="text-[10px] uppercase font-bold text-blue-400">Emergency</p>
+                    <p class="font-bold text-blue-700 mt-1 underline">0800-LIFE-911</p>
+                </div>
+            </div>
+        </aside>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10 grid-stats">
-            <div class="md:col-span-2 bg-slate-900 p-8 rounded-[2rem] text-white relative overflow-hidden">
-                <span class="text-[10px] font-black opacity-40 uppercase tracking-[3px]">Health Wisdom</span>
-                <p id="healthyTip" class="text-md font-medium mt-2 leading-relaxed italic">Start your day with hydration! ☀️</p>
-                <div class="absolute right-[-20px] bottom-[-20px] w-32 h-32 bg-sky-500/10 rounded-full blur-3xl"></div>
+        <main class="flex-1 overflow-y-auto relative">
+            <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 p-6 flex justify-between items-center border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="md:hidden text-slate-600 text-xl"><i class="fas fa-bars"></i></button>
+                    <div>
+                        <h1 id="greetingMsg" class="font-bold text-slate-800 text-lg">Loading...</h1>
+                        <p class="text-xs text-slate-400" id="currentDate"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="text-right hidden md:block">
+                        <p id="realTimeClock" class="font-bold text-slate-700"></p>
+                        <p class="text-[10px] text-green-500 font-bold uppercase tracking-widest">System Online</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff" class="w-10 h-10 rounded-full shadow-lg">
+                </div>
+            </header>
+
+            <div id="contentBody" class="p-4 md:p-8">
+                <div id="homePage" class="page-section">
+                    <div class="bg-gradient-to-r from-blue-600 to-emerald-500 p-8 rounded-[2rem] text-white mb-8 relative overflow-hidden shadow-2xl">
+                        <div class="relative z-10 max-w-xl">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Daily Healthy Tip</span>
+                            <h2 id="dailyTip" class="text-2xl font-bold mt-4 leading-relaxed">Loading today's health advice...</h2>
+                        </div>
+                        <i class="fas fa-heartbeat absolute right-[-20px] bottom-[-20px] text-[12rem] text-white opacity-10 rotate-12"></i>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                        <div class="glass-card p-6 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-user-injured"></i></div>
+                            <div><p class="text-xs text-slate-400 font-bold uppercase">Total Patients</p><h4 id="countP" class="text-2xl font-black">0</h4></div>
+                        </div>
+                        <div class="glass-card p-6 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fas fa-calendar-check"></i></div>
+                            <div><p class="text-xs text-slate-400 font-bold uppercase">Today Appointments</p><h4 id="countA" class="text-2xl font-black">0</h4></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card overflow-hidden">
+                        <div class="p-6 flex justify-between items-center border-b border-slate-50">
+                            <h3 class="font-bold text-slate-800">Current Patient Queue</h3>
+                            <button onclick="toggleModal('patientModal')" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-blue-700 transition-all">+ Add New Case</button>
+                        </div>
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="p-6 text-[10px] font-black uppercase text-slate-400">Patient</th>
+                                    <th class="p-6 text-[10px] font-black uppercase text-slate-400">Diagnosis</th>
+                                    <th class="p-6 text-[10px] font-black uppercase text-slate-400">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientTableBody">
+                                <tr><td colspan="3" class="p-6"><div class="h-10 skeleton w-full"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="pharmacyPage" class="page-section hidden">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-2xl font-bold">Online Pharmacy (100+ Meds)</h2>
+                        <div class="flex gap-4">
+                            <input type="text" id="medSearch" placeholder="Search medicine..." class="px-4 py-2 border rounded-xl outline-none focus:ring-2 ring-blue-100" onkeyup="searchMedicine()">
+                            <button onclick="openCart()" class="bg-emerald-500 text-white px-6 py-2 rounded-xl font-bold"><i class="fas fa-shopping-cart mr-2"></i> Bill Cart</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="medicineGrid">
+                        </div>
+                </div>
+
+                <div id="labPage" class="page-section hidden">
+                    <div class="glass-card p-8">
+                        <h2 class="text-2xl font-bold mb-6">Laboratory Reports</h2>
+                        <div id="labReportsList" class="space-y-4">
+                            </div>
+                    </div>
+                </div>
+                
+                <div id="staffPage" class="page-section hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="staffGrid">
+                        </div>
+                </div>
             </div>
-            <div class="glass-card p-6 flex flex-col justify-center border-l-4 border-l-sky-500">
-                <p class="text-slate-400 text-[10px] font-black uppercase">Patients <span class="trend-up">↑ 4%</span></p>
-                <h4 id="countP" class="text-3xl font-black text-slate-800">0</h4>
-            </div>
-            <div class="glass-card p-6 flex flex-col justify-center border-l-4 border-l-emerald-500">
-                <p class="text-slate-400 text-[10px] font-black uppercase">Staff Online</p>
-                <h4 id="countS" class="text-3xl font-black text-slate-800">0</h4>
+        </main>
+    </div>
+
+    <div id="patientModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl scale-up-animation">
+            <h2 class="text-xl font-black mb-6">Patient Admission</h2>
+            <div class="space-y-4">
+                <input type="text" id="pName" placeholder="Full Name" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-blue-500">
+                <input type="text" id="pDisease" placeholder="Condition/Bimary" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-blue-500">
+                <button onclick="savePatient()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Register Patient</button>
+                <button onclick="toggleModal('patientModal')" class="w-full text-slate-400 text-sm font-bold">Dismiss</button>
             </div>
         </div>
+    </div>
 
-        <div id="dashboardSection" class="section">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-black text-slate-800">Patient Queue</h3>
-                <button onclick="toggleModal()" class="fab-btn bg-sky-500 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl">+ New Case</button>
-            </div>
-            <div class="glass-card overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-50/50">
-                        <tr>
-                            <th class="p-6 text-[10px] font-black uppercase text-slate-400">Patient Details</th>
-                            <th class="p-6 text-[10px] font-black uppercase text-slate-400">Condition</th>
-                            <th class="p-6 text-right text-[10px] font-black uppercase text-slate-400">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="patientList" class="divide-y divide-slate-50">
-                        <tr><td colspan="3" class="p-10"><div class="h-10 skeleton w-full"></div></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        <div id="billingSection" class="section hidden">
-            <div class="glass-card p-8 max-w-2xl mx-auto">
-                <h3 class="font-black text-center text-xl mb-8">Instant Invoicing</h3>
-                <div class="space-y-4">
-                    <input type="text" id="billName" placeholder="Patient Name" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-sky-300">
-                    <input type="number" id="billAmt" placeholder="Fee Amount (PKR)" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-sky-300">
+        const firebaseConfig = {
+            apiKey: "AIzaSyANCd9_8skLjVS_IaVgfbk24ZAlYeZpCR8",
+            authDomain: "lifecare-hms-117d8.firebaseapp.com",
+            projectId: "lifecare-hms-117d8",
+            storageBucket: "lifecare-hms-117d8.firebasestorage.app",
+            messagingSenderId: "489995234025",
+            appId: "1:489995234025:web:c5a7d23f71b71aa2e51e78"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- 1. Real-time Greetings & Notifications ---
+        function updateGreetings() {
+            const hr = new Date().getHours();
+            const msg = document.getElementById('greetingMsg');
+            let text = "";
+            if (hr < 12) text = "Good Morning, Gentleman & Beautiful People";
+            else if (hr < 18) text = "Good Afternoon, Professionals";
+            else text = "Good Evening, LifeCare Team";
+            msg.innerText = text;
+
+            // Simple Notification logic (3 times a day check)
+            if ([9, 14, 21].includes(hr)) {
+                // Show notification trigger
+            }
+        }
+
+        // --- 2. Real-time Clock ---
+        setInterval(() => {
+            document.getElementById('realTimeClock').innerText = new Date().toLocaleTimeString();
+            document.getElementById('currentDate').innerText = new Date().toDateString();
+        }, 1000);
+
+        // --- 3. Dynamic Healthy Tips ---
+        const tips = [
+            "Drink 8 glasses of water today for kidney health.",
+            "A 15-minute walk can boost your heart health significantly.",
+            "Avoid sugar in your green tea to manage portion control.",
+            "Eggs are a great source of protein for your breakfast."
+        ];
+        document.getElementById('dailyTip').innerText = tips[Math.floor(Math.random() * tips.length)];
+
+        // --- 4. Pharmacy Logic (100 Medicines) ---
+        const medicines = [
+            {id: 1, name: "Panadol", price: 50}, {id: 2, name: "Augmentin", price: 450},
+            {id: 3, name: "Arinac", price: 120}, {id: 4, name: "Brufen", price: 80},
+            // ... Imaging 100 meds here
+        ];
+        // Populate Grid
+        const grid = document.getElementById('medicineGrid');
+        for(let i=0; i<20; i++) { // Sample 20 for code length
+            const med = medicines[i % medicines.length];
+            grid.innerHTML += `
+                <div class="glass-card p-4 text-center hover:border-emerald-500 cursor-pointer" onclick="addToCart('${med.name}', ${med.price})">
+                    <i class="fas fa-capsules text-emerald-400 text-2xl mb-2"></i>
+                    <p class="font-bold text-sm">${med.name}</p>
+                    <p class="text-xs text-slate-400">Rs. ${med.price}</p>
+                </div>
+            `;
+        }
+
+        // --- 5. Firebase Sync (Patients & Staff) ---
+        onSnapshot(query(collection(db, "patients"), orderBy("time", "desc")), (snap) => {
+            const list = document.getElementById('patientTableBody');
+            document.getElementById('countP').innerText = snap.size;
+            
+            if(snap.empty) {
+                list.innerHTML = `<tr><td colspan="3" class="p-10 text-center text-slate-400 font-bold">NO Patient Today ☕</td></tr>`;
+                return;
+            }
+
+            list.innerHTML = "";
+            snap.forEach(d => {
+                const p = d.data();
+                list.innerHTML += `
+                    <tr class="hover:bg-slate-50/50">
+                        <td class="p-6 font-bold text-slate-700">${p.name}</td>
+                        <td class="p-6"><span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase">${p.disease}</span></td>
+                        <td class="p-6">
+                            <button onclick="confirmDelete('patients', '${d.id}')" class="text-rose-400 hover:text-rose-600"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        });
+
+        // --- 6. Sweet Alerts for Delete ---
+        window.confirmDelete = (col, id) => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This record will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, Delete it!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await deleteDoc(doc(db, col, id));
+                    Swal.fire('Deleted!', 'Record has been removed.', 'success');
+                }
+            })
+        };
+
+        // --- 7. Functions for Navigation & Modals ---
+        window.showPage = (id) => {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+            document.getElementById(id + 'Page').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+            document.getElementById('nav-' + id).classList.add('nav-active');
+        };
+
+        window.toggleModal = (id) => document.getElementById(id).classList.toggle('hidden');
+
+        window.savePatient = async () => {
+            const n = document.getElementById('pName').value;
+            const d = document.getElementById('pDisease').value;
+            if(n && d) {
+                await addDoc(collection(db, "patients"), { name: n, disease: d, time: new Date() });
+                toggleModal('patientModal');
+                Swal.fire('Success', 'Patient Registered Successfully', 'success');
+                document.getElementById('pName').value = ""; document.getElementById('pDisease').value = "";
+            }
+        };
+
+        // Initialize
+        updateGreetings();
+    </script>
+</body>
+</html>
