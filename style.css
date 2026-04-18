@@ -1,41 +1,56 @@
-/* Sidebar ko fix karne ke liye ye code update karein */
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+/* Layout & Sidebar */
 .sidebar {
     width: 280px;
     background: white;
     height: 100vh;
     display: flex;
-    flex-direction: column; /* Is se items ek ke niche ek ayenge */
+    flex-direction: column;
     position: sticky;
     top: 0;
-    transition: all 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 50;
     border-right: 1px solid #f1f5f9;
 }
 
-/* Nav buttons ko vertical list banane ke liye */
-nav {
-    display: flex;
-    flex-direction: column; /* Buttons ko line mein nahi balki niche niche rakhega */
-    gap: 8px;
-    padding: 0 16px;
+@media (max-width: 1024px) {
+    .sidebar { position: fixed; transform: translateX(-280px); }
+    .sidebar.active { transform: translateX(0); }
 }
 
 .nav-btn {
-    width: 100%;
-    padding: 14px 20px;
-    border-radius: 16px;
-    text-align: left;
-    font-size: 14px;
-    font-weight: 500;
-    color: #64748b;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s;
-    background: transparent;
-    border: none;
-    cursor: pointer;
+    width: 100%; padding: 18px 24px; border-radius: 24px; text-align: left;
+    font-size: 14px; font-weight: 600; color: #64748b; display: flex;
+    align-items: center; gap: 15px; transition: 0.3s;
 }
 
-.nav-btn i {
-    width: 24px; /* Icons ko ek hi line mein rakhne ke liye */
-    margin-right: 12px;
+.nav-btn:hover { background: #f8fafc; color: #1e293b; }
+.nav-btn.active { background: #eff6ff; color: #2563eb; font-weight: 800; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08); }
+
+/* Components */
+.card { border-radius: 35px; border: 1px solid #f1f5f9; transition: all 0.5s; box-shadow: 0 4px 30px rgba(0,0,0,0.02); }
+.card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
+
+.form-input { 
+    width: 100%; padding: 18px 28px; background: #f8fafc; border: 2px solid transparent; 
+    border-radius: 25px; outline: none; transition: 0.3s; font-size: 14px;
 }
+.form-input:focus { border-color: #dbeafe; background: white; box-shadow: 0 8px 30px rgba(37, 99, 235, 0.03); }
+
+/* Animations */
+.animate-fade-in { animation: fadeIn 0.6s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+.scale-in { animation: scaleIn 0.3s ease-out; }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+.hidden { display: none !important; }
+
+/* Status Dot Pulse */
+.dot-available { background-color: #10b981; }
+.dot-busy { background-color: #f59e0b; }
+.dot-leave { background-color: #ef4444; }
