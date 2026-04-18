@@ -10,23 +10,23 @@
         :root { --primary: #0ea5e9; --success: #10b981; --bg: #f8fafc; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #1e293b; overflow-x: hidden; }
 
-        /* 1. Animations */
+        /* Animations */
         @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 12px; }
 
-        /* 2. Professional Cards */
+        /* Professional Cards */
         .glass-card { 
             background: white; border: 1px solid rgba(226, 232, 240, 0.8); 
             box-shadow: 0 1px 3px rgba(0,0,0,0.02); border-radius: 1.5rem; transition: all 0.3s ease;
         }
         .glass-card:hover { transform: translateY(-3px); box-shadow: 0 12px 20px -5px rgba(0,0,0,0.05); }
 
-        /* 3. Badges & Elements */
+        /* Badges & Elements */
         .badge-active { background: #f0fdf4; color: #166534; padding: 4px 12px; border-radius: 99px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
         .nav-link-active { background: #f1f5f9 !important; color: var(--primary) !important; font-weight: 800; }
         .trend-up { color: var(--success); font-size: 11px; font-weight: bold; margin-left: 4px; }
 
-        /* 4. ZenDesk Mobile Optimization */
+        /* ZenDesk Mobile Optimization */
         @media (max-width: 768px) {
             nav {
                 position: fixed !important; bottom: 0; left: 0; width: 100%;
@@ -42,7 +42,7 @@
             }
             #patientList td { display: block; border: none !important; padding: 4px 0 !important; }
             thead { display: none; }
-            .admin-fab {
+            .fab-btn {
                 position: fixed; bottom: 85px; right: 20px; width: 60px; height: 60px;
                 background: var(--primary); color: white; border-radius: 20px;
                 display: flex; align-items: center; justify-content: center;
@@ -57,20 +57,7 @@
 
     <div id="notifBox" class="fixed top-6 right-6 z-[300] space-y-2"></div>
 
-    <div id="authSection" class="flex items-center justify-center min-h-screen p-6 bg-slate-50">
-        <div class="w-full max-w-md glass-card p-10 text-center shadow-2xl">
-            <div class="w-16 h-16 bg-sky-500 rounded-2xl flex items-center justify-center text-white text-xl font-black mx-auto mb-6">LC</div>
-            <h1 class="text-2xl font-black text-slate-800">LifeCare HMS</h1>
-            <p class="text-slate-400 text-sm mb-8 font-medium italic">Empowering Hospital Management</p>
-            <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="admin@test.com" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none focus:ring-2 ring-sky-500/20 border-none">
-                <input type="password" id="loginPass" placeholder="Password" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none focus:ring-2 ring-sky-500/20 border-none">
-                <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-sky-600 transition-all shadow-lg">Sign In</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="mainDashboard" class="hidden max-w-7xl mx-auto p-4 md:p-10 main-content">
+    <div id="mainDashboard" class="max-w-7xl mx-auto p-4 md:p-10 main-content">
         <header class="flex items-center justify-between mb-10">
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 bg-sky-500 rounded-xl flex items-center justify-center text-white font-bold">LC</div>
@@ -83,14 +70,13 @@
                 <button onclick="showSection('dashboard')" id="btn-dashboard" class="nav-btn px-4 py-2 rounded-xl text-slate-400 nav-link-active">🏠 Home</button>
                 <button onclick="showSection('billing')" id="btn-billing" class="nav-btn px-4 py-2 rounded-xl text-slate-400">💳 Billing</button>
                 <button onclick="showSection('staff')" id="btn-staff" class="nav-btn px-4 py-2 rounded-xl text-slate-400">👨‍⚕️ Staff</button>
-                <button onclick="handleLogout()" class="px-3 py-2 text-rose-500 opacity-50 hover:opacity-100">🚪</button>
             </nav>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10 grid-stats">
             <div class="md:col-span-2 bg-slate-900 p-8 rounded-[2rem] text-white relative overflow-hidden">
-                <span id="tipLabel" class="text-[10px] font-black opacity-40 uppercase tracking-[3px]">Quick Tip</span>
-                <p id="healthyTip" class="text-md font-medium mt-2 leading-relaxed italic">Loading wisdom...</p>
+                <span class="text-[10px] font-black opacity-40 uppercase tracking-[3px]">Health Wisdom</span>
+                <p id="healthyTip" class="text-md font-medium mt-2 leading-relaxed italic">Start your day with hydration! ☀️</p>
                 <div class="absolute right-[-20px] bottom-[-20px] w-32 h-32 bg-sky-500/10 rounded-full blur-3xl"></div>
             </div>
             <div class="glass-card p-6 flex flex-col justify-center border-l-4 border-l-sky-500">
@@ -106,7 +92,7 @@
         <div id="dashboardSection" class="section">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-black text-slate-800">Patient Queue</h3>
-                <button onclick="toggleModal()" class="admin-only admin-fab bg-sky-500 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl shadow-sky-100">+ New Case</button>
+                <button onclick="toggleModal()" class="fab-btn bg-sky-500 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl">+ New Case</button>
             </div>
             <div class="glass-card overflow-hidden">
                 <table class="w-full text-left">
@@ -130,176 +116,3 @@
                 <div class="space-y-4">
                     <input type="text" id="billName" placeholder="Patient Name" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-sky-300">
                     <input type="number" id="billAmt" placeholder="Fee Amount (PKR)" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-sky-300">
-                    <button onclick="addBill()" class="admin-only w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-sky-600">Generate Bill</button>
-                </div>
-                <div id="billHistory" class="mt-10 space-y-3"></div>
-            </div>
-        </div>
-
-        <div id="staffSection" class="section hidden">
-            <div id="staffList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-        </div>
-    </div>
-
-    <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-[200] flex items-center justify-center p-6">
-        <div class="bg-white p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl">
-            <h2 class="text-2xl font-black mb-2 text-slate-800">New Admission</h2>
-            <p class="text-slate-400 text-sm mb-6 font-medium">Add patient details to the queue.</p>
-            <div class="space-y-4">
-                <input type="text" id="pName" placeholder="Patient Full Name" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-sky-300">
-                <input type="text" id="pDisease" placeholder="Diagnosis (e.g. Hypertension)" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border focus:border-sky-300">
-                <button onclick="savePatient()" class="w-full bg-sky-500 text-white py-5 rounded-2xl font-bold shadow-lg shadow-sky-100">Add to Queue</button>
-                <button onclick="toggleModal()" class="w-full text-slate-400 font-bold py-2 text-sm">Dismiss</button>
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyANCd9_8skLjVS_IaVgfbk24ZAlYeZpCR8",
-            authDomain: "lifecare-hms-117d8.firebaseapp.com",
-            projectId: "lifecare-hms-117d8",
-            storageBucket: "lifecare-hms-117d8.firebasestorage.app",
-            messagingSenderId: "489995234025",
-            appId: "1:489995234025:web:c5a7d23f71b71aa2e51e78"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // --- AUTH ---
-        window.handleLogin = () => {
-            const e = document.getElementById('loginEmail').value;
-            const p = document.getElementById('loginPass').value;
-            if(e === "admin@test.com" && p === "123") {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', 'admin');
-                location.reload();
-            } else if(e && p) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', 'user');
-                location.reload();
-            }
-        };
-
-        window.handleLogout = () => { localStorage.clear(); location.reload(); };
-
-        // --- SYNC ENGINE ---
-        function startSync() {
-            const role = localStorage.getItem('userRole');
-
-            // 1. Patients
-            onSnapshot(query(collection(db, "patients"), orderBy("time", "desc")), (snap) => {
-                const list = document.getElementById('patientList');
-                document.getElementById('countP').innerText = snap.size;
-                
-                if(snap.empty) {
-                    list.innerHTML = `<tr><td colspan="3" class="p-10 text-center text-slate-300 font-bold">No patients in queue ☕</td></tr>`;
-                    return;
-                }
-
-                list.innerHTML = "";
-                snap.forEach(d => {
-                    const p = d.data();
-                    const del = role === 'admin' ? `<button onclick="deleteItem('patients', '${d.id}')" class="p-2 text-rose-300 hover:text-rose-500">🗑️</button>` : '';
-                    list.innerHTML += `
-                        <tr class="group">
-                            <td class="p-6 font-bold text-slate-700">${p.name}</td>
-                            <td class="p-6"><span class="badge-active">${p.disease}</span></td>
-                            <td class="p-6 text-right">${del}</td>
-                        </tr>`;
-                });
-            });
-
-            // 2. Staff
-            onSnapshot(collection(db, "staff"), (snap) => {
-                document.getElementById('countS').innerText = snap.size;
-                const sList = document.getElementById('staffList');
-                sList.innerHTML = "";
-                snap.forEach(d => {
-                    const s = d.data();
-                    sList.innerHTML += `
-                        <div class="glass-card p-6 flex items-center justify-between">
-                            <div><p class="font-bold">${s.name}</p><p class="text-[10px] text-slate-400 uppercase font-black tracking-widest">${s.role}</p></div>
-                            <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                        </div>`;
-                });
-            });
-
-            // 3. Billing
-            onSnapshot(query(collection(db, "bills"), orderBy("createdAt", "desc")), (snap) => {
-                const bHistory = document.getElementById('billHistory');
-                bHistory.innerHTML = "";
-                snap.forEach(d => {
-                    const b = d.data();
-                    bHistory.innerHTML += `
-                        <div class="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                            <div><p class="font-bold text-sm">${b.name}</p><p class="text-[10px] text-slate-400">${b.date}</p></div>
-                            <p class="font-black text-sky-600">Rs. ${b.amount}</p>
-                        </div>`;
-                });
-            });
-        }
-
-        // --- CORE ACTIONS ---
-        window.savePatient = async () => {
-            const n = document.getElementById('pName').value, d = document.getElementById('pDisease').value;
-            if(n && d) {
-                await addDoc(collection(db, "patients"), { name: n, disease: d, time: new Date() });
-                toggleModal();
-                showNotif("Case Added Successfully!");
-            }
-        };
-
-        window.addBill = async () => {
-            const n = document.getElementById('billName').value, a = document.getElementById('billAmt').value;
-            if(n && a) {
-                await addDoc(collection(db, "bills"), { name: n, amount: a, date: new Date().toLocaleTimeString(), createdAt: new Date() });
-                document.getElementById('billName').value = ""; document.getElementById('billAmt').value = "";
-                showNotif("Bill Generated!");
-            }
-        };
-
-        window.deleteItem = async (col, id) => {
-            if(confirm("Delete this record permanently?")) {
-                await deleteDoc(doc(db, col, id));
-                showNotif("Record Deleted.");
-            }
-        };
-
-        // --- UI HELPERS ---
-        window.showSection = (id) => {
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id + 'Section').classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-link-active'));
-            document.getElementById('btn-' + id).classList.add('nav-link-active');
-        };
-
-        window.toggleModal = () => document.getElementById('modal').classList.toggle('hidden');
-
-        function showNotif(msg) {
-            const b = document.getElementById('notifBox');
-            const n = document.createElement('div');
-            n.className = "bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold shadow-2xl animate-bounce";
-            n.innerText = msg; b.appendChild(n);
-            setTimeout(() => n.remove(), 3000);
-        }
-
-        // --- INIT ---
-        if(localStorage.getItem('isLoggedIn') === 'true') {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-            if(localStorage.getItem('userRole') !== 'admin') document.querySelectorAll('.admin-only').forEach(el => el.remove());
-            
-            setInterval(() => { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString(); }, 1000);
-            const hr = new Date().getHours();
-            document.getElementById('healthyTip').innerText = hr < 12 ? "Morning checkups help detect early symptoms. Stay vigilant!" : "Monitor oxygen levels regularly for critical care patients.";
-            
-            startSync();
-        }
-    </script>
-</body>
-</html>
