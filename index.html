@@ -3,119 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeCare Pro | Professional HMS</title>
+    <title>LifeCare Pro | Life-Saving HMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50">
+<body class="bg-slate-50 font-[Poppins]">
 
     <div class="flex min-h-screen">
-        <aside id="sidebar" class="sidebar shadow-xl active">
+        <aside id="sidebar" class="sidebar shadow-2xl overflow-y-auto">
             <div class="p-6 border-b border-slate-100 flex items-center gap-3 text-blue-600">
-                <i class="fas fa-hospital-user text-3xl"></i>
-                <span class="font-bold text-xl tracking-tight text-slate-800">LifeCare</span>
+                <i class="fas fa-hospital-symbol text-3xl"></i>
+                <span class="font-bold text-xl tracking-tighter text-slate-800 uppercase">LifeCare</span>
             </div>
-            <nav class="mt-6 flex-1">
-                <button onclick="showPage('dashboard')" class="nav-btn active" id="btn-dashboard">
-                    <i class="fas fa-th-large"></i> Dashboard
-                </button>
-                <button onclick="showPage('pharmacy')" class="nav-btn" id="btn-pharmacy">
-                    <i class="fas fa-capsules"></i> Pharmacy
-                </button>
-                <button onclick="showPage('staff')" class="nav-btn" id="btn-staff">
-                    <i class="fas fa-user-md"></i> Doctors/Staff
-                </button>
-                <button onclick="showPage('lab')" class="nav-btn" id="btn-lab">
-                    <i class="fas fa-microscope"></i> Lab Reports
-                </button>
+            <nav class="mt-6 flex-1 px-4 space-y-1">
+                <p class="text-[10px] font-black text-slate-400 px-4 mb-2 uppercase tracking-widest">Main Menu</p>
+                <button onclick="showPage('home')" class="nav-btn active" id="btn-home"><i class="fas fa-home"></i> Home</button>
+                <button onclick="showPage('dashboard')" class="nav-btn" id="btn-dashboard"><i class="fas fa-chart-line"></i> Admin Panel</button>
+                <button onclick="showPage('pharmacy')" class="nav-btn" id="btn-pharmacy"><i class="fas fa-pills"></i> Pharmacy</button>
+                <button onclick="showPage('staff')" class="nav-btn" id="btn-staff"><i class="fas fa-user-md"></i> Doctors</button>
+                <button onclick="showPage('lab')" class="nav-btn" id="btn-lab"><i class="fas fa-flask"></i> Lab Reports</button>
+                <button onclick="showPage('contact')" class="nav-btn" id="btn-contact"><i class="fas fa-map-marked-alt"></i> Contact Us</button>
             </nav>
-            <div class="p-6 bg-blue-600 text-white m-4 rounded-2xl shadow-lg">
-                <p class="text-[10px] font-bold uppercase opacity-70 italic">Emergency 24/7</p>
+            <div class="p-6 bg-emerald-500 text-white m-4 rounded-[2rem] shadow-lg shadow-emerald-100">
+                <p class="text-[10px] font-bold uppercase opacity-80">Emergency Help</p>
                 <p class="font-bold text-lg">0800-911-22</p>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
-            <header class="h-20 bg-white border-b flex items-center justify-between px-8 sticky top-0 z-30">
+        <main class="flex-1 flex flex-col min-w-0">
+            <header class="h-20 bg-white/90 backdrop-blur-md border-b flex items-center justify-between px-6 sticky top-0 z-40">
                 <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()" class="md:hidden text-2xl text-slate-600"><i class="fas fa-bars"></i></button>
+                    <button onclick="toggleSidebar()" class="lg:hidden text-2xl text-slate-600"><i class="fas fa-bars"></i></button>
                     <div>
-                        <h2 id="greetingText" class="font-bold text-slate-800 text-sm md:text-lg italic">Hello!</h2>
-                        <p class="text-[10px] text-blue-500 font-bold uppercase tracking-widest" id="liveClock"></p>
+                        <h2 id="greetingText" class="font-bold text-slate-800 text-sm md:text-base italic">Welcome</h2>
+                        <p class="text-[10px] text-blue-500 font-black uppercase tracking-widest" id="liveClock"></p>
                     </div>
                 </div>
-                <div class="flex items-center gap-5">
-                    <div id="notif-bell" class="relative text-slate-400 cursor-pointer">
-                        <i class="fas fa-bell"></i>
-                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full animate-ping"></span>
-                    </div>
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff" class="w-10 h-10 rounded-xl border-2 border-slate-100">
+                <div class="hidden md:flex items-center gap-4 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                    <span class="text-[10px] font-bold text-slate-400 px-3">HEALTH SCORE: 98%</span>
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff" class="w-10 h-10 rounded-xl">
                 </div>
             </header>
 
-            <div id="content" class="p-6 overflow-y-auto">
-                <div id="page-dashboard" class="page-section">
-                    <div class="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-[2.5rem] p-10 text-white relative overflow-hidden mb-10 shadow-2xl">
-                        <div class="relative z-10 max-w-lg">
-                            <span class="bg-white/20 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Daily Health Tip</span>
-                            <h3 id="healthTip" class="text-2xl font-bold mt-4 leading-relaxed italic">Loading wisdom...</h3>
-                        </div>
-                        <i class="fas fa-stethoscope absolute right-[-20px] bottom-[-40px] text-[15rem] text-white opacity-10 rotate-12"></i>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 text-center">
-                        <div class="card p-6 border-l-4 border-l-blue-500">
-                            <p class="text-xs text-slate-400 font-bold uppercase">Patients Today</p>
-                            <h4 id="countP" class="text-3xl font-black text-slate-800">0</h4>
-                        </div>
-                        <div class="card p-6 border-l-4 border-l-emerald-500">
-                            <p class="text-xs text-slate-400 font-bold uppercase">Doctors Online</p>
-                            <h4 class="text-3xl font-black text-slate-800">10</h4>
+            <div id="content" class="p-4 md:p-8 overflow-y-auto">
+                
+                <div id="page-home" class="page-section animate-fade-in">
+                    <div class="relative rounded-[3rem] overflow-hidden h-[400px] mb-10 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-transparent flex items-center p-12">
+                            <div class="max-w-md text-white">
+                                <h1 class="text-4xl md:text-5xl font-black leading-tight">Your Health, Our Priority.</h1>
+                                <p class="mt-4 opacity-90 text-sm leading-relaxed">LifeCare is more than a hospital. It's a sanctuary of healing and advanced medical technology.</p>
+                                <button onclick="showPage('dashboard')" class="mt-8 bg-emerald-500 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:bg-emerald-600 transition-all">Book Appointment</button>
+                            </div>
                         </div>
                     </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="card p-8 bg-white text-center">
+                            <i class="fas fa-ambulance text-4xl text-blue-500 mb-4"></i>
+                            <h3 class="font-bold text-lg">24/7 Emergency</h3>
+                            <p class="text-slate-400 text-xs mt-2">Always ready for any critical medical situation.</p>
+                        </div>
+                        <div class="card p-8 bg-white text-center">
+                            <i class="fas fa-microscope text-4xl text-emerald-500 mb-4"></i>
+                            <h3 class="font-bold text-lg">Modern Lab</h3>
+                            <p class="text-slate-400 text-xs mt-2">Accurate and fast diagnostic reports.</p>
+                        </div>
+                        <div class="card p-8 bg-white text-center">
+                            <i class="fas fa-pills text-4xl text-amber-500 mb-4"></i>
+                            <h3 class="font-bold text-lg">Online Pharmacy</h3>
+                            <p class="text-slate-400 text-xs mt-2">Order medicines from home anytime.</p>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="card overflow-hidden bg-white">
+                <div id="page-dashboard" class="page-section hidden animate-fade-in">
+                    <div class="bg-gradient-to-br from-blue-600 via-blue-500 to-emerald-400 rounded-[3rem] p-10 text-white relative overflow-hidden mb-10 shadow-xl">
+                        <div class="relative z-10">
+                            <span class="bg-white/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase">Daily Health Tip</span>
+                            <h3 id="healthTip" class="text-2xl md:text-3xl font-bold mt-6 leading-relaxed max-w-2xl italic">...</h3>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        <div class="card p-6 border-l-8 border-l-blue-500 bg-white">
+                            <p class="text-[10px] text-slate-400 font-black uppercase">Total Patients</p>
+                            <h4 id="countP" class="text-3xl font-black mt-2">0</h4>
+                        </div>
+                        <div class="card p-6 border-l-8 border-l-emerald-500 bg-white">
+                            <p class="text-[10px] text-slate-400 font-black uppercase">Doctors Active</p>
+                            <h4 class="text-3xl font-black mt-2">10</h4>
+                        </div>
+                    </div>
+                    <div class="card bg-white overflow-hidden shadow-sm">
                         <div class="p-6 border-b flex justify-between items-center">
-                            <h3 class="font-bold text-slate-800">Current Admission Queue</h3>
-                            <button onclick="openModal('patientModal')" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-700">+ New Entry</button>
+                            <h3 class="font-bold text-slate-800">Recent Patient Queue</h3>
+                            <button onclick="openModal('patientModal')" class="bg-blue-600 text-white px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest">+ New Admission</button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <tbody id="patientTableBody">
-                                    <tr><td class="p-10 text-center"><div class="h-10 skeleton w-full"></div></td></tr>
+                                    <tr id="noPatientMsg" class="hidden"><td class="p-16 text-center text-slate-300 font-black italic">NO patient today</td></tr>
+                                    <tr class="skeleton-row"><td class="p-10 text-center"><div class="h-6 bg-slate-100 rounded-full animate-pulse w-full"></div></td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <div id="page-pharmacy" class="page-section hidden">
-                    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-                        <h2 class="text-2xl font-black text-slate-800">LifeCare Pharmacy</h2>
-                        <div class="flex gap-4 w-full md:w-auto">
-                            <input type="text" id="searchMedInput" placeholder="Search 100+ Medicines..." class="form-input flex-1 md:w-80" onkeyup="filterMeds()">
-                        </div>
+                <div id="page-pharmacy" class="page-section hidden animate-fade-in">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                        <h2 class="text-3xl font-black text-slate-800 italic">LifeCare Pharma</h2>
+                        <input type="text" id="searchMed" onkeyup="filterMeds()" placeholder="Search 100+ medicines..." class="form-input md:w-96 shadow-sm border-slate-100">
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-6" id="medicineGrid">
-                        </div>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="medicineGrid"></div>
                 </div>
 
-                <div id="page-staff" class="page-section hidden">
-                    <h2 class="text-2xl font-black text-slate-800 mb-8">Medical Specialists</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="doctorGrid">
-                        </div>
+                <div id="page-staff" class="page-section hidden animate-fade-in">
+                    <h2 class="text-3xl font-black text-slate-800 mb-10 tracking-tighter">Medical Specialists List</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="doctorGrid"></div>
                 </div>
 
-                <div id="page-lab" class="page-section hidden">
-                    <div class="card p-10 max-w-4xl mx-auto text-center">
-                        <i class="fas fa-vials text-5xl text-blue-100 mb-4"></i>
-                        <h3 class="text-xl font-bold mb-6 italic">Laboratory Reports & Archives</h3>
-                        <div id="labList" class="space-y-4 text-left">
-                            <div class="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-center text-slate-400 font-bold">
-                                No reports available at the moment.
+                <div id="page-contact" class="page-section hidden animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="card p-10 bg-white">
+                            <h3 class="text-2xl font-black mb-6">Contact Us</h3>
+                            <div class="space-y-6">
+                                <div class="flex items-center gap-4">
+                                    <i class="fas fa-map-marker-alt text-blue-500 text-xl"></i>
+                                    <p class="text-sm font-medium">123 Health Avenue, Islamabad, Pakistan</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <i class="fas fa-phone-alt text-emerald-500 text-xl"></i>
+                                    <p class="text-sm font-medium">051-1234567 / 0800-911-22</p>
+                                </div>
+                                <div class="rounded-3xl overflow-hidden border-4 border-slate-50 h-48 bg-slate-200">
+                                    <p class="text-center p-20 text-slate-400 italic text-xs">Google Maps Integration Here</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card p-10 bg-blue-600 text-white">
+                            <h3 class="text-2xl font-black mb-6">Quick Message</h3>
+                            <div class="space-y-4">
+                                <input type="text" placeholder="Your Name" class="w-full p-4 rounded-2xl bg-white/10 border-none placeholder:text-white/50 text-white outline-none">
+                                <textarea placeholder="Message" class="w-full p-4 rounded-2xl bg-white/10 border-none placeholder:text-white/50 text-white outline-none h-32"></textarea>
+                                <button class="w-full bg-white text-blue-600 py-4 rounded-2xl font-bold uppercase text-xs">Send Request</button>
                             </div>
                         </div>
                     </div>
@@ -125,18 +159,20 @@
         </main>
     </div>
 
-    <div id="patientModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-[2rem] w-full max-w-md shadow-2xl">
-            <h3 class="text-xl font-black mb-6">Patient Admission</h3>
+    <div id="patientModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[3rem] w-full max-w-md shadow-2xl scale-in">
+            <h3 class="text-xl font-black text-slate-800 uppercase mb-6 tracking-widest text-center">Admission Form</h3>
             <div class="space-y-4">
-                <input type="text" id="pName" placeholder="Full Name" class="form-input">
-                <input type="text" id="pDisease" placeholder="Disease Detail" class="form-input">
-                <button onclick="savePatient()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-xl">Add Entry</button>
-                <button onclick="closeModal('patientModal')" class="w-full text-slate-400 font-bold text-sm">Cancel</button>
+                <input type="text" id="pName" placeholder="Patient Name" class="form-input">
+                <input type="text" id="pDisease" placeholder="Diagnosis / Symptom" class="form-input">
+                <button onclick="savePatient()" class="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-bold shadow-xl shadow-blue-100 hover:scale-[1.02] transition-all">REGISTER PATIENT</button>
+                <button onclick="closeModal('patientModal')" class="w-full text-slate-400 font-bold text-xs uppercase tracking-widest">Close</button>
             </div>
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
