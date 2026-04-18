@@ -1,459 +1,269 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>LifeCare HMS | Premium Dashboard</title>
-
+    <title>LifeCare HMS | Pro Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
     <style>
-
         :root { --primary: #10b981; }
-
         body { 
-
             font-family: 'Plus Jakarta Sans', sans-serif; 
-
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-
-            min-height: screen;
-
+            min-height: 100vh;
         }
-
-        /* Floating Glass Effect */
-
         .glass-card { 
-
             background: rgba(255, 255, 255, 0.7); 
-
             backdrop-filter: blur(20px); 
-
             border: 1px solid rgba(255, 255, 255, 0.5); 
-
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
         }
-
-        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.08); }
-
-        
-
-        /* Animated Gradient for Tip Card */
-
+        .glass-card:hover { transform: translateY(-5px); }
         .premium-grad {
-
             background: linear-gradient(-45deg, #0f172a, #1e293b, #10b981, #059669);
-
             background-size: 400% 400%;
-
             animation: gradientAnim 15s ease infinite;
-
         }
-
-        @keyframes gradientAnim {
-
-            0% { background-position: 0% 50%; }
-
-            50% { background-position: 100% 50%; }
-
-            100% { background-position: 0% 50%; }
-
-        }
-
-
-
-        .nav-link-active { background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-
+        @keyframes gradientAnim { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .nav-link-active { background: white !important; color: var(--primary) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .hidden { display: none !important; }
-
-        
-
-        /* Custom Input Appearance */
-
         input { transition: all 0.3s ease; border: 1px solid transparent !important; }
-
         input:focus { border-color: var(--primary) !important; background: white !important; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
-
     </style>
-
 </head>
-
 <body class="text-slate-900 antialiased">
-
-
 
     <div id="notification-container" class="fixed top-6 right-6 z-[200] flex flex-col gap-3"></div>
 
-
-
     <div id="authSection" class="flex items-center justify-center min-h-screen p-6">
-
         <div class="w-full max-w-[420px] glass-card rounded-[3rem] p-10 text-center">
-
             <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white text-xl font-black mx-auto mb-6 shadow-xl shadow-emerald-500/20">LC</div>
-
             <h1 class="text-3xl font-extrabold tracking-tight mb-2">Welcome Back</h1>
-
             <p class="text-slate-500 mb-8 font-medium">LifeCare HMS Professional Portal</p>
-
             <div class="space-y-4">
-
-                <input type="email" id="loginEmail" placeholder="Email Address" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-
-                <input type="password" id="loginPass" placeholder="Password" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
-
+                <input type="email" id="loginEmail" placeholder="Email (admin@test.com)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
+                <input type="password" id="loginPass" placeholder="Password (123)" class="w-full px-6 py-4 rounded-2xl bg-slate-100 outline-none">
                 <button onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-emerald-600 transition-all shadow-lg">Sign In</button>
-
             </div>
-
         </div>
-
     </div>
-
-
 
     <div id="mainDashboard" class="hidden p-4 md:p-10 max-w-7xl mx-auto">
-
-        
-
         <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
-
             <div>
-
-                <h2 class="text-4xl font-extrabold tracking-tighter">Command Center</h2>
-
-                <p class="text-slate-500 font-medium">Hello Admin, here's what's happening today.</p>
-
+                <h2 id="roleTitle" class="text-4xl font-extrabold tracking-tighter">Command Center</h2>
+                <p class="text-slate-500 font-medium italic">Everything you need to manage LifeCare.</p>
             </div>
-
-            <nav class="bg-slate-200/50 p-1.5 rounded-3xl flex gap-1">
-
-                <button onclick="showSection('dashboard')" id="btn-dashboard" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all nav-link-active">📊 Home</button>
-
-                <button onclick="showSection('appointments')" id="btn-appointments" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">📅 Visits</button>
-
-                <button onclick="showSection('pharmacy')" id="btn-pharmacy" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">💊 Store</button>
-
-                <button onclick="showSection('staff')" id="btn-staff" class="nav-btn px-6 py-3 rounded-2xl font-bold text-slate-500 transition-all">👨‍⚕️ Team</button>
-
+            <nav class="bg-slate-200/50 p-1.5 rounded-3xl flex flex-wrap justify-center gap-1">
+                <button onclick="showSection('dashboard')" id="btn-dashboard" class="nav-btn px-4 py-2 rounded-xl font-bold text-slate-500 transition-all nav-link-active">📊 Home</button>
+                <button onclick="showSection('appointments')" id="btn-appointments" class="nav-btn px-4 py-2 rounded-xl font-bold text-slate-500 transition-all">📅 Visits</button>
+                <button onclick="showSection('billing')" id="btn-billing" class="nav-btn px-4 py-2 rounded-xl font-bold text-slate-500 transition-all">💳 Billing</button>
+                <button onclick="showSection('lab')" id="btn-lab" class="nav-btn px-4 py-2 rounded-xl font-bold text-slate-500 transition-all">🔬 Lab</button>
+                <button onclick="showSection('pharmacy')" id="btn-pharmacy" class="nav-btn px-4 py-2 rounded-xl font-bold text-slate-500 transition-all">💊 Store</button>
+                <button onclick="showSection('staff')" id="btn-staff" class="nav-btn px-4 py-2 rounded-xl font-bold text-slate-500 transition-all">👨‍⚕️ Team</button>
+                <button onclick="handleLogout()" class="px-4 py-2 rounded-xl font-bold text-rose-500">🚪</button>
             </nav>
-
         </header>
 
-
-
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-
             <div class="md:col-span-2 premium-grad p-8 rounded-[3rem] text-white relative overflow-hidden shadow-2xl">
-
-                <span id="tipTime" class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Daily Insight</span>
-
+                <span id="tipLabel" class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Daily Insight</span>
                 <h3 class="text-2xl font-bold mt-4 leading-tight"><span id="tipEmoji">✨</span> <span id="healthyTip">Loading...</span></h3>
-
                 <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-
             </div>
-
             <div class="glass-card p-8 rounded-[3rem] flex flex-col justify-center">
-
-                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Patients</p>
-
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Active Cases</p>
                 <h4 id="countP" class="text-4xl font-black mt-2">0</h4>
-
             </div>
-
             <div class="glass-card p-8 rounded-[3rem] flex flex-col justify-center">
-
-                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Staff</p>
-
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Duty Staff</p>
                 <h4 id="countS" class="text-4xl font-black mt-2 text-emerald-500">0</h4>
-
             </div>
-
         </div>
-
-
-
-        <div class="mb-8 relative group">
-
-            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search patient database..." class="w-full glass-card px-12 py-5 rounded-[2rem] outline-none font-semibold text-lg">
-
-            <span class="absolute left-5 top-1/2 -translate-y-1/2 opacity-30 text-xl">🔍</span>
-
-        </div>
-
-
 
         <main>
-
             <div id="dashboardSection" class="section">
-
                 <div class="flex justify-between items-center mb-6 px-4">
-
                     <h3 class="text-xl font-bold">Recent Admissions</h3>
-
-                    <button onclick="toggleModal('modal')" class="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold hover:bg-slate-900 transition-all">+ Add Record</button>
-
+                    <button onclick="toggleModal('modal')" class="admin-only bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold">+ Record</button>
                 </div>
-
                 <div class="glass-card rounded-[3rem] overflow-hidden">
-
                     <table class="w-full text-left">
-
-                        <thead class="bg-slate-50/50 border-b border-slate-100">
-
-                            <tr><th class="p-8 text-xs font-black uppercase text-slate-400">Name</th><th class="p-8 text-xs font-black uppercase text-slate-400">Condition</th><th class="p-8 text-right text-xs font-black uppercase text-slate-400">Action</th></tr>
-
+                        <thead class="bg-slate-50/50 border-b">
+                            <tr><th class="p-8 text-xs font-black uppercase text-slate-400">Name</th><th class="p-8 text-xs font-black uppercase text-slate-400">Status</th><th class="p-8 text-right text-xs font-black uppercase text-slate-400">Action</th></tr>
                         </thead>
-
-                        <tbody id="patientList" class="divide-y divide-slate-50"></tbody>
-
+                        <tbody id="patientList" class="divide-y divide-slate-100"></tbody>
                     </table>
-
                 </div>
-
             </div>
 
+            <div id="billingSection" class="section hidden">
+                <div class="glass-card p-10 rounded-[3.5rem]">
+                    <h3 class="text-2xl font-bold mb-8 text-center">💳 Professional Billing</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <input type="text" id="billName" placeholder="Patient Name" class="p-5 bg-slate-50 rounded-2xl outline-none">
+                        <input type="number" id="billAmt" placeholder="Amount (PKR)" class="p-5 bg-slate-50 rounded-2xl outline-none">
+                        <button onclick="addBill()" class="admin-only bg-slate-900 text-white rounded-2xl font-bold">Generate Invoice</button>
+                    </div>
+                    <div id="billHistory" class="space-y-4"></div>
+                </div>
+            </div>
 
+            <div id="labSection" class="section hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-8 rounded-[3rem]">
+                        <h4 class="font-bold mb-4">🔬 Pending Reports</h4>
+                        <div id="labList" class="space-y-3">
+                            <p class="text-slate-400 italic">No pending lab tests.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div id="pharmacySection" class="section hidden">
-
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
                     <div class="glass-card p-8 rounded-[3rem] text-center group">
-
-                        <div class="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6 group-hover:scale-110 transition-transform">💊</div>
-
-                        <h4 class="font-bold text-xl">Panadol Forte</h4>
-
+                        <div class="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6">💊</div>
+                        <h4 class="font-bold text-xl">General Meds</h4>
                         <p class="text-emerald-500 font-black mt-2 text-2xl">Rs. 80</p>
-
-                        <button onclick="buyMed('Panadol', 80)" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Purchase</button>
-
+                        <button onclick="buyMed('Medicine', 80)" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Purchase</button>
                     </div>
-
-                    </div>
-
+                </div>
             </div>
-
-
 
             <div id="staffSection" class="section hidden">
-
                 <div class="flex justify-between items-center mb-8 px-4">
-
-                    <h3 class="text-xl font-bold">Professional Team</h3>
-
-                    <button onclick="toggleModal('staffModal')" class="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold">+ Register Staff</button>
-
+                    <h3 class="text-xl font-bold">Medical Staff</h3>
+                    <button onclick="toggleModal('staffModal')" class="admin-only bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold">+ Add Staff</button>
                 </div>
-
                 <div id="staffList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-
             </div>
-
+            
+            <div id="appointmentsSection" class="section hidden glass-card p-20 rounded-[4rem] text-center">
+                <p class="text-slate-400 text-lg">Daily visit logs are being updated...</p>
+            </div>
         </main>
-
     </div>
-
-
 
     <div id="modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden z-[200] flex items-center justify-center p-6">
-
         <div class="bg-white p-12 rounded-[3.5rem] w-full max-w-md shadow-2xl">
-
-            <h2 class="text-3xl font-black mb-8 text-center tracking-tight">New Patient</h2>
-
+            <h2 class="text-3xl font-black mb-8 text-center">New Entry</h2>
             <div class="space-y-4">
-
-                <input type="text" id="name" placeholder="Patient Full Name" class="w-full p-5 bg-slate-50 rounded-2xl outline-none">
-
+                <input type="text" id="name" placeholder="Name" class="w-full p-5 bg-slate-50 rounded-2xl outline-none">
                 <input type="text" id="disease" placeholder="Diagnosis" class="w-full p-5 bg-slate-50 rounded-2xl outline-none">
-
-                <button onclick="savePatient()" class="w-full bg-emerald-500 text-white py-5 rounded-2xl font-bold shadow-xl shadow-emerald-500/20">Save Record</button>
-
-                <button onclick="toggleModal('modal')" class="w-full py-4 text-slate-400 font-bold">Cancel</button>
-
+                <button onclick="savePatient()" class="w-full bg-emerald-500 text-white py-5 rounded-2xl font-bold">Confirm</button>
+                <button onclick="toggleModal('modal')" class="w-full py-4 text-slate-400">Cancel</button>
             </div>
-
         </div>
-
     </div>
 
-
-
     <script>
-
         let patients = JSON.parse(localStorage.getItem('hospitalData')) || [];
-
         let staff = JSON.parse(localStorage.getItem('hospitalStaff')) || [];
-
-
-
-        const tips = {
-
-            morning: { text: "Drink warm water with lemon to start your day.", emoji: "🍋" },
-
-            afternoon: { text: "Take a 5-minute eye break from screens.", emoji: "👀" },
-
-            evening: { text: "Dim the lights 1 hour before sleeping.", emoji: "💤" }
-
-        };
-
-
+        let bills = JSON.parse(localStorage.getItem('hospitalBills')) || [];
+        let userRole = localStorage.getItem('userRole') || 'user';
 
         function handleLogin() {
-
             const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-
             if(e && p) {
-
+                userRole = (e === "admin@test.com" && p === "123") ? "admin" : "user";
+                localStorage.setItem('userRole', userRole);
+                localStorage.setItem('isLogged', 'true');
                 document.getElementById('authSection').classList.add('hidden');
-
                 document.getElementById('mainDashboard').classList.remove('hidden');
-
-                loadAll();
-
+                init();
             }
-
         }
 
+        function handleLogout() { localStorage.clear(); location.reload(); }
 
+        function init() {
+            applyPermissions();
+            renderTable();
+            renderStaff();
+            renderBills();
+            updateTips();
+        }
 
-        function loadAll() { renderTable(); renderStaff(); updateTips(); }
-
-
+        function applyPermissions() {
+            if(userRole !== 'admin') {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                document.getElementById('roleTitle').innerText = "Patient Portal";
+            }
+        }
 
         function updateTips() {
-
             const h = new Date().getHours();
-
-            let tip = (h >= 5 && h < 12) ? tips.morning : (h >= 12 && h < 18) ? tips.afternoon : tips.evening;
-
-            document.getElementById('healthyTip').innerText = tip.text;
-
-            document.getElementById('tipEmoji').innerText = tip.emoji;
-
+            const tip = (h < 12) ? "Drink warm water with lemon start." : (h < 18) ? "Take a 5-min eye break from screens." : "Aim for 8 hours of deep sleep.";
+            document.getElementById('healthyTip').innerText = tip;
         }
-
-
 
         function showSection(id) {
-
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-
             document.getElementById(id + 'Section').classList.remove('hidden');
-
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-link-active'));
-
             document.getElementById('btn-' + id).classList.add('nav-link-active');
-
         }
-
-
 
         function renderTable() {
-
             document.getElementById('patientList').innerHTML = patients.map(p => `
-
-                <tr class="hover:bg-slate-50/80 transition-all">
-
-                    <td class="p-8 font-bold text-slate-800">${p.name}</td>
-
-                    <td class="p-8"><span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">${p.disease}</span></td>
-
-                    <td class="p-8 text-right"><button onclick="deletePatient(${p.id})" class="text-rose-400 hover:text-rose-600 font-bold px-4 py-2 rounded-xl transition-all">Delete</button></td>
-
+                <tr class="hover:bg-slate-50 transition-all">
+                    <td class="p-8 font-bold">${p.name}</td>
+                    <td class="p-8"><span class="bg-emerald-100 text-emerald-700 px-4 py-1 rounded-full text-[10px] font-black">${p.disease}</span></td>
+                    <td class="p-8 text-right">
+                        ${userRole === 'admin' ? `<button onclick="deletePatient(${p.id})" class="text-rose-400 font-bold">Delete</button>` : ''}
+                    </td>
                 </tr>`).join('');
-
             document.getElementById('countP').innerText = patients.length;
-
         }
-
-
 
         function savePatient() {
-
             const n = document.getElementById('name').value, d = document.getElementById('disease').value;
-
-            if(n && d) { patients.push({id: Date.now(), name: n, disease: d}); localStorage.setItem('hospitalData', JSON.stringify(patients)); renderTable(); toggleModal('modal'); showNotification("Success: Patient Added"); }
-
+            if(n && d) { 
+                patients.push({id: Date.now(), name: n, disease: d}); 
+                localStorage.setItem('hospitalData', JSON.stringify(patients)); 
+                renderTable(); toggleModal('modal'); 
+                showNotification("Record Saved"); 
+            }
         }
-
-
 
         function deletePatient(id) { patients = patients.filter(p => p.id !== id); localStorage.setItem('hospitalData', JSON.stringify(patients)); renderTable(); }
 
-
-
-        function renderStaff() {
-
-            document.getElementById('staffList').innerHTML = staff.map(s => `
-
-                <div class="glass-card p-8 rounded-[3rem] flex justify-between items-center group">
-
-                    <div><h4 class="font-bold text-lg">${s.name}</h4><p class="text-emerald-500 text-[10px] font-black uppercase mt-1 tracking-widest">${s.role}</p></div>
-
-                    <button onclick="deleteStaff(${s.id})" class="opacity-0 group-hover:opacity-100 transition-all text-rose-500">✕</button>
-
-                </div>`).join('');
-
-            document.getElementById('countS').innerText = staff.length;
-
-        }
-
-
-
-        function searchTable() {
-
-            const val = document.getElementById('searchInput').value.toLowerCase();
-
-            const rows = document.getElementById('patientList').getElementsByTagName('tr');
-
-            for (let r of rows) {
-
-                const name = r.getElementsByTagName('td')[0].textContent.toLowerCase();
-
-                r.style.display = name.includes(val) ? "" : "none";
-
+        function addBill() {
+            const n = document.getElementById('billName').value, a = document.getElementById('billAmt').value;
+            if(n && a) {
+                bills.unshift({name: n, amount: a, date: new Date().toLocaleTimeString()});
+                localStorage.setItem('hospitalBills', JSON.stringify(bills));
+                renderBills();
+                showNotification("Invoice Created");
             }
-
         }
 
-
-
-        function buyMed(m, p) { showNotification(`Success: ${m} purchased for Rs. ${p}`); }
-
-
+        function renderBills() {
+            document.getElementById('billHistory').innerHTML = bills.map(b => `
+                <div class="flex justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                    <div><p class="font-bold">${b.name}</p><p class="text-xs text-slate-400">${b.date}</p></div>
+                    <p class="font-black text-emerald-600">Rs. ${b.amount}</p>
+                </div>`).join('');
+        }
 
         function showNotification(m) {
-
-            const c = document.getElementById('notification-container');
-
+            const container = document.getElementById('notification-container');
             const n = document.createElement('div');
-
-            n.className = "bg-slate-900 text-white px-8 py-5 rounded-[2rem] shadow-2xl font-bold animate-slide-in";
-
-            n.innerText = m; c.appendChild(n); setTimeout(() => n.remove(), 3000);
-
+            n.className = "bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold shadow-2xl transition-all";
+            n.innerText = m; container.appendChild(n); setTimeout(() => n.remove(), 3000);
         }
-
-
 
         function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
 
+        // Persistent Session Check
+        if(localStorage.getItem('isLogged')) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            init();
+        }
     </script>
-
 </body>
-
 </html>
