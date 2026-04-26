@@ -53,26 +53,49 @@ class HospitalLinkedList {
     // UI Render karna (Traversal)
     render() {
         const tbody = document.getElementById('patientTableBody');
+        const visualizer = document.getElementById('linkedListVisualizer');
         document.getElementById('countP').innerText = this.size;
         
         if (this.size === 0) {
             tbody.innerHTML = `<tr><td colspan="3" class="p-16 text-center text-slate-300 font-black italic">NO patient today</td></tr>`;
+            if(visualizer) visualizer.innerHTML = `<div class="text-slate-300 text-xs italic">Queue is empty. Head points to NULL.</div>`;
             return;
         }
 
-        let html = "";
+        let tableHtml = "";
+        let visualHtml = "";
         let current = this.head; // Start from Head
+        let index = 0;
+
         while (current) {
-            html += `
+            // 1. Table Row Generation
+            tableHtml += `
                 <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-all">
                     <td class="p-5 font-bold text-slate-700 text-sm">${current.name}</td>
                     <td class="p-5"><span class="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-tighter">${current.disease}</span></td>
                     <td class="p-5 text-right"><button onclick="delPatient('${current.id}')" class="text-rose-200 hover:text-rose-500 transition-colors"><i class="fas fa-trash-alt"></i></button></td>
                 </tr>
             `;
+
+            // 2. Visual Node Generation (DSA Visualization)
+            const isHead = index === 0;
+            visualHtml += `
+                <div class="flex-shrink-0 px-5 py-3 rounded-2xl border transition-all duration-500 ${isHead ? 'bg-blue-600 text-white border-blue-700 shadow-lg shadow-blue-100' : 'bg-white text-slate-700 border-slate-100'}">
+                    <div class="text-[8px] uppercase font-black ${isHead ? 'text-blue-200' : 'text-slate-400'}">${isHead ? 'HEAD NODE' : 'NODE'}</div>
+                    <div class="font-bold text-xs truncate max-w-[100px]">${current.name}</div>
+                </div>
+                <div class="flex-shrink-0 flex flex-col items-center gap-1">
+                    <i class="fas fa-arrow-right ${current.next ? 'text-blue-300' : 'text-slate-200'} text-xs"></i>
+                    <span class="text-[7px] font-bold ${current.next ? 'text-slate-300' : 'text-slate-400'}">${current.next ? 'NEXT' : 'NULL'}</span>
+                </div>
+            `;
+
             current = current.next; // Move to next node
+            index++;
         }
-        tbody.innerHTML = html;
+        
+        tbody.innerHTML = tableHtml;
+        if(visualizer) visualizer.innerHTML = visualHtml;
     }
 }
 
@@ -93,13 +116,16 @@ window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle
 function startClock() {
     setInterval(() => {
         const now = new Date();
-        document.getElementById('liveClock').innerText = now.toLocaleTimeString() + " | " + now.toDateString();
+        const clockEl = document.getElementById('liveClock');
+        if(clockEl) clockEl.innerText = now.toLocaleTimeString() + " | " + now.toDateString();
         
         const hr = now.getHours();
         const greet = document.getElementById('greetingText');
-        if(hr < 12) greet.innerText = "Good Morning, Gentleman & Beautiful People";
-        else if(hr < 18) greet.innerText = "Good Afternoon, Professionals";
-        else greet.innerText = "Good Evening, Sir/Madam";
+        if(greet) {
+            if(hr < 12) greet.innerText = "Good Morning, Gentleman & Beautiful People";
+            else if(hr < 18) greet.innerText = "Good Afternoon, Professionals";
+            else greet.innerText = "Good Evening, Sir/Madam";
+        }
     }, 1000);
 }
 
@@ -112,7 +138,8 @@ function updateHealthTips() {
         "Sleep is the best medicine. Target 8 hours tonight.",
         "Green tea after meals can boost metabolism."
     ];
-    document.getElementById('healthTip').innerText = tips[Math.floor(Math.random()*tips.length)];
+    const tipEl = document.getElementById('healthTip');
+    if(tipEl) tipEl.innerText = tips[Math.floor(Math.random()*tips.length)];
 }
 
 // 5. Doctor Management
@@ -127,6 +154,7 @@ const doctors = [
 
 function loadStaff() {
     const grid = document.getElementById('doctorGrid');
+    if(!grid) return;
     grid.innerHTML = doctors.map(d => {
         let color = d.status === "Available" ? "emerald" : (d.status === "Busy" ? "amber" : "rose");
         return `
@@ -169,7 +197,9 @@ for(let i=1; i<=100; i++) {
 }
 
 window.filterMeds = () => {
-    const term = document.getElementById('searchMed').value.toLowerCase();
+    const searchEl = document.getElementById('searchMed');
+    if(!searchEl) return;
+    const term = searchEl.value.toLowerCase();
     const grid = document.getElementById('medicineGrid');
     grid.innerHTML = meds.filter(m => m.name.toLowerCase().includes(term)).map(m => `
         <div class="card p-5 text-center bg-white cursor-pointer hover:border-blue-400" onclick="buyMed('${m.name}', ${m.price})">
@@ -193,16 +223,11 @@ window.buyMed = (n, p) => {
 // 7. Firebase Sync with DSA (Linked List Integration)
 function syncPatients() {
     db.collection("patients").orderBy("time", "asc").onSnapshot(snap => {
-        // Linked List ko refresh karna
         patientLL.clear();
-        
         snap.forEach(doc => {
             const p = doc.data();
-            // Data ko Linked List mein add karna
             patientLL.append(doc.id, p.name, p.disease);
         });
-
-        // Linked List ke through UI render karna
         patientLL.render();
     });
 }
@@ -231,4 +256,4 @@ startClock();
 updateHealthTips();
 loadStaff();
 filterMeds();
-syncPatients(); // Ab ye Linked List use kar raha hai
+syncPatients();
