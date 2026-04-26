@@ -97,6 +97,24 @@
                             <h4 class="text-3xl font-black mt-2">10</h4>
                         </div>
                     </div>
+
+                    <div class="card bg-white p-6 mb-10 overflow-hidden shadow-sm border border-blue-50">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                                <i class="fas fa-project-diagram text-blue-500"></i> 
+                                Live Queue Logic (Singly Linked List)
+                            </h3>
+                            <span class="text-[9px] font-black text-blue-500 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-widest">FIFO System</span>
+                        </div>
+                        <div id="linkedListVisualizer" class="flex items-center gap-4 overflow-x-auto pb-4 scrollbar-hide min-h-[90px]">
+                            <div class="text-slate-300 text-xs italic">Loading logic visualization...</div>
+                        </div>
+                        <div class="flex gap-4 mt-2">
+                            <p class="text-[9px] text-slate-400 italic flex items-center gap-1"><span class="w-2 h-2 bg-blue-600 rounded-full"></span> Head Pointer</p>
+                            <p class="text-[9px] text-slate-400 italic flex items-center gap-1"><span class="w-2 h-2 bg-slate-200 rounded-full border border-slate-300"></span> Regular Node</p>
+                        </div>
+                    </div>
+
                     <div class="card bg-white overflow-hidden shadow-sm">
                         <div class="p-6 border-b flex justify-between items-center">
                             <h3 class="font-bold text-slate-800">Recent Patient Queue</h3>
@@ -137,42 +155,4 @@
                                 </div>
                                 <div class="flex items-center gap-4">
                                     <i class="fas fa-phone-alt text-emerald-500 text-xl"></i>
-                                    <p class="text-sm font-medium">051-1234567 / 0800-911-22</p>
-                                </div>
-                                <div class="rounded-3xl overflow-hidden border-4 border-slate-50 h-48 bg-slate-200">
-                                    <p class="text-center p-20 text-slate-400 italic text-xs">Google Maps Integration Here</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card p-10 bg-blue-600 text-white">
-                            <h3 class="text-2xl font-black mb-6">Quick Message</h3>
-                            <div class="space-y-4">
-                                <input type="text" placeholder="Your Name" class="w-full p-4 rounded-2xl bg-white/10 border-none placeholder:text-white/50 text-white outline-none">
-                                <textarea placeholder="Message" class="w-full p-4 rounded-2xl bg-white/10 border-none placeholder:text-white/50 text-white outline-none h-32"></textarea>
-                                <button class="w-full bg-white text-blue-600 py-4 rounded-2xl font-bold uppercase text-xs">Send Request</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <div id="patientModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-[3rem] w-full max-w-md shadow-2xl scale-in">
-            <h3 class="text-xl font-black text-slate-800 uppercase mb-6 tracking-widest text-center">Admission Form</h3>
-            <div class="space-y-4">
-                <input type="text" id="pName" placeholder="Patient Name" class="form-input">
-                <input type="text" id="pDisease" placeholder="Diagnosis / Symptom" class="form-input">
-                <button onclick="savePatient()" class="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-bold shadow-xl shadow-blue-100 hover:scale-[1.02] transition-all">REGISTER PATIENT</button>
-                <button onclick="closeModal('patientModal')" class="w-full text-slate-400 font-bold text-xs uppercase tracking-widest">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+                                    <p class="text-sm font-medium">051-1234567 / 0800-911-22
